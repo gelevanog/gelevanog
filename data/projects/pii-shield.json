@@ -1,0 +1,61 @@
+{
+ "id": "pii-shield",
+ "order": 2,
+ "name": "PII Shield",
+ "repo": "https://github.com/gelevanog/pii-redaction-gateway",
+ "stack": [
+  "Python",
+  "GLiNER (NER)",
+  "Regex validators"
+ ],
+ "og": "assets/og/pii-shield.png",
+ "demo": "pii-shield",
+ "en": {
+  "title": "Strip personal data before it reaches the LLM — and put it back",
+  "tag": "An OpenAI-compatible gateway that swaps names, emails, card numbers and secrets for placeholders.",
+  "problem": "Every customer email you send to an LLM API also sends a name, a phone and a card number to a third party. The alternative many teams pick is “no AI”.",
+  "how": [
+   "Patterns with validators (Luhn, IBAN checksum) catch structured data precisely.",
+   "A NER model (GLiNER, CPU) finds names and addresses that patterns cannot.",
+   "The model sees only placeholders like [PERSON_1]; the real values are restored in its answer."
+  ],
+  "verdict": "Only 6 of 330 gold values (1.8%) reached the provider. Patterns alone let 57% through — precise, but blind to names. Redacted answers were as good or better in 65% of blind comparisons, against a 70% noise floor for two samples of the same prompt.",
+  "demo_title": "Redact it yourself",
+  "demo_intro": "Paste any text. Everything is detected in your browser. Turn the name detector off to see what patterns alone miss."
+ },
+ "ru": {
+  "title": "Убираем персональные данные до LLM — и возвращаем в ответ",
+  "tag": "OpenAI-совместимый шлюз, заменяющий имена, email, номера карт и секреты на плейсхолдеры.",
+  "problem": "Каждое письмо клиента, отправленное в API LLM, отправляет третьей стороне ещё и имя, телефон и номер карты. Многие команды выбирают альтернативу «без AI».",
+  "how": [
+   "Паттерны с валидаторами (Luhn, контрольная сумма IBAN) точно ловят структурированные данные.",
+   "NER-модель (GLiNER, на CPU) находит имена и адреса, которые паттерны не видят.",
+   "Модель видит только плейсхолдеры вроде [PERSON_1]; настоящие значения возвращаются в её ответ."
+  ],
+  "verdict": "До провайдера дошло лишь 6 из 330 эталонных значений (1,8%). Одни паттерны пропускали 57% — точные, но слепые к именам. Ответы по обезличенному тексту были не хуже в 65% слепых сравнений при «шумовом» уровне 70% для двух ответов на один и тот же промпт.",
+  "demo_title": "Обезличьте сами",
+  "demo_intro": "Вставьте любой текст. Всё определяется в вашем браузере. Выключите детектор имён, чтобы увидеть, что пропускают одни паттерны."
+ },
+ "stats": [
+  [
+   "1.8%",
+   "gold PII values reached the provider",
+   "эталонных значений дошло до провайдера"
+  ],
+  [
+   "0.96",
+   "detection F1 (202 docs, 13 types, 5 languages)",
+   "F1 (202 док., 13 типов, 5 языков)"
+  ],
+  [
+   "67 ms",
+   "per document, CPU only",
+   "на документ, только CPU"
+  ],
+  [
+   "39/39",
+   "placeholders restored correctly",
+   "плейсхолдеров восстановлено верно"
+  ]
+ ]
+}

@@ -1,0 +1,57 @@
+{
+ "id": "crm-copilot",
+ "order": 6,
+ "name": "CRM Copilot",
+ "repo": "https://github.com/gelevanog/crm-copilot-nextjs",
+ "stack": [
+  "TypeScript",
+  "Next.js",
+  "NestJS",
+  "Prisma"
+ ],
+ "og": "assets/og/crm-copilot.png",
+ "demo": "crm-copilot",
+ "en": {
+  "title": "AI inside a product needs the same permissions as the user",
+  "tag": "LLM features added to an existing multi-tenant SaaS app, done safely.",
+  "problem": "Most companies asking for “AI in our product” already have a product: a database, accounts and permissions. A chatbot pasted on top can know things it should not.",
+  "how": [
+   "The copilot calls only a few typed functions, each scoped to the signed-in workspace in code. It never writes SQL.",
+   "It never writes on its own: it proposes a change, the user sees a before/after diff and approves it.",
+   "Every AI output is validated against a schema (Zod); rate limits and cost per request are logged."
+  ],
+  "verdict": "The AI gets the same permissions as the user — not more. A bad answer becomes a clean error, not a broken page.",
+  "demo_title": "Talk to the copilot",
+  "demo_intro": "Try the presets or type your own command. Notice what it refuses to do."
+ },
+ "ru": {
+  "title": "AI внутри продукта должен иметь те же права, что и пользователь",
+  "tag": "LLM-функции в существующем multi-tenant SaaS-приложении — безопасно.",
+  "problem": "У большинства компаний, которые просят «AI в продукт», продукт уже есть: база, аккаунты и права. Чат-бот, прикрученный сверху, может знать то, чего не должен.",
+  "how": [
+   "Копилот вызывает лишь несколько типизированных функций, каждая ограничена рабочим пространством пользователя в коде. SQL он не пишет.",
+   "Сам он ничего не записывает: предлагает изменение, пользователь видит diff «до/после» и подтверждает.",
+   "Каждый ответ AI проверяется по схеме (Zod); лимиты и стоимость каждого запроса логируются."
+  ],
+  "verdict": "AI получает те же права, что и пользователь, — не больше. Плохой ответ превращается в аккуратную ошибку, а не в сломанную страницу.",
+  "demo_title": "Поговорите с копилотом",
+  "demo_intro": "Попробуйте пресеты или введите свою команду. Обратите внимание, от чего он отказывается."
+ },
+ "stats": [
+  [
+   "0",
+   "SQL written by the model",
+   "SQL, написанного моделью"
+  ],
+  [
+   "104",
+   "tests in 12 files",
+   "теста в 12 файлах"
+  ],
+  [
+   "Zod",
+   "every AI output is schema-validated",
+   "каждый ответ AI проверяется по схеме"
+  ]
+ ]
+}

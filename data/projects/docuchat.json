@@ -1,0 +1,63 @@
+{
+ "id": "docuchat",
+ "order": 5,
+ "name": "DocuChat",
+ "repo": "https://github.com/gelevanog/docuchat-rag",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "pgvector",
+  "Next.js"
+ ],
+ "og": "assets/og/docuchat.png",
+ "demo": "docuchat",
+ "en": {
+  "title": "The most useful answer a document chatbot can give: “I don't know”",
+  "tag": "Chat with your PDFs, Word files and Markdown. Every claim has a clickable citation.",
+  "problem": "A general chatbot answers confidently even when it has never seen your files. That is how wrong answers about your contract or policy appear.",
+  "how": [
+   "Hybrid search: vector search (pgvector) plus full-text, merged with Reciprocal Rank Fusion.",
+   "Answers use only retrieved passages, each cited with file, page and section.",
+   "Retrieval quality is measured with hit-rate and MRR. If nothing relevant is found, it says so."
+  ],
+  "verdict": "In RAG, most bad answers are search problems, not model problems. Measure retrieval first, then tune the prompt.",
+  "demo_title": "Ask the handbook",
+  "demo_intro": "A tiny fictional company handbook. Ask something it covers — and something it does not."
+ },
+ "ru": {
+  "title": "Самый полезный ответ чат-бота по документам: «Я не знаю»",
+  "tag": "Чат с вашими PDF, Word и Markdown. У каждого утверждения есть кликабельная цитата.",
+  "problem": "Обычный чат-бот отвечает уверенно, даже если не видел ваших файлов. Так появляются неверные ответы про ваш договор или регламент.",
+  "how": [
+   "Гибридный поиск: векторный (pgvector) плюс полнотекстовый, объединённые Reciprocal Rank Fusion.",
+   "Ответ строится только из найденных фрагментов, каждый с цитатой: файл, страница, раздел.",
+   "Качество поиска измеряется hit-rate и MRR. Если ничего подходящего нет — так и говорит."
+  ],
+  "verdict": "В RAG большинство плохих ответов — проблемы поиска, а не модели. Сначала измеряйте retrieval, потом правьте промпт.",
+  "demo_title": "Спросите справочник",
+  "demo_intro": "Крошечный справочник вымышленной компании. Спросите то, что в нём есть — и то, чего нет."
+ },
+ "stats": [
+  [
+   "30",
+   "golden questions in the retrieval eval (12 paraphrased)",
+   "эталонных вопросов в оценке поиска (12 перефразированных)"
+  ],
+  [
+   "Hybrid search",
+   "pgvector + full-text, merged by RRF",
+   "pgvector + полнотекст, объединены RRF",
+   "Гибридный поиск"
+  ],
+  [
+   "PDF · DOCX · MD",
+   "formats ingested, with page numbers",
+   "форматы, с номерами страниц"
+  ],
+  [
+   "hit-rate · MRR",
+   "retrieval is evaluated, not guessed",
+   "поиск оценивается, а не угадывается"
+  ]
+ ]
+}

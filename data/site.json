@@ -1,0 +1,213 @@
+{
+ "name": "Ivan Savchenko",
+ "url": "https://gelevanog.github.io/gelevanog",
+ "links": {
+  "github": "https://github.com/gelevanog",
+  "linkedin": "https://www.linkedin.com/in/ivan-savchenko-04084487/",
+  "upwork": "https://www.upwork.com/freelancers/ivans152",
+  "email": "gelevanog@gmail.com"
+ },
+ "stack": [
+  "Python",
+  "TypeScript",
+  "LangGraph",
+  "FastAPI",
+  "Next.js",
+  "NestJS",
+  "PostgreSQL + pgvector",
+  "Claude Code",
+  "Cursor"
+ ],
+ "en": {
+  "title": "Ivan Savchenko — AI projects that publish their own numbers",
+  "desc": "Open-source LLM projects with live demos in your browser: AI agents, RAG, prompt-injection firewall, PII redaction, model distillation. Real measurements, honest verdicts.",
+  "eyebrow": "AI-First Full Stack Developer",
+  "h1": "I build LLM apps and publish the numbers — <em>including the failures.</em>",
+  "lead": "Every project here has an interactive demo that runs in your browser, no API key needed. Then read the real measurements in the repo.",
+  "cta_demos": "Try the demos",
+  "cta_hire": "Work with me",
+  "demos_h": "Live demos",
+  "demos_sub": "Each one is a small, working version of an open-source project. The real thing is on GitHub.",
+  "try": "Try it",
+  "soon_h": "More coming",
+  "soon_p": "New AI projects land here as they ship. Follow on LinkedIn to see them first.",
+  "principles_h": "How I work",
+  "principles": [
+   [
+    "The LLM reads. The code decides.",
+    "Models are great at messy text. Business rules, money and permissions live in plain, testable code."
+   ],
+   [
+    "Measure first, promise later.",
+    "Every project has an evaluation: recall, hit-rate, exact match, cost per 1,000 requests."
+   ],
+   [
+    "Honest verdicts.",
+    "When a 0.5B model is not good enough, the README says so — and shows what worked instead."
+   ]
+  ],
+  "about_h": "About",
+  "about_p": "10+ years in web development, from front-end to full stack. I work AI-First: Claude Code and Cursor write the routine code, I own architecture, rules, review and tests. Working remotely with teams worldwide.",
+  "stack_h": "Stack",
+  "contact_h": "Let's talk",
+  "contact_p": "Open to remote full-time roles and freelance projects. Want LLM features in your product?",
+  "demo_h": "Live demo",
+  "demo_note": "A small browser version with a deterministic fake model — no API key, nothing leaves your device. The real project is in the repo.",
+  "what_h": "What it solves",
+  "how_h": "How it works",
+  "results_h": "Measured results",
+  "verdict_h": "The honest verdict",
+  "repo_btn": "Open on GitHub",
+  "share_h": "Share this",
+  "copy": "Copy link",
+  "copied": "Copied!",
+  "next_h": "Next demo",
+  "all": "All projects",
+  "back": "← All demos",
+  "lang_switch": "RU",
+  "lang_switch_label": "Русская версия",
+  "footer": "Built with plain HTML, CSS and JS. Open source.",
+  "hero_tag": "Open source · AI-First · Full Stack",
+  "hero_note": "Real measurements from my repos",
+  "marquee_h": "Tools I ship with",
+  "counters": [
+   [
+    140,
+    "attack prompts tested against the firewall"
+   ],
+   [
+    202,
+    "documents labeled by hand for PII"
+   ],
+   [
+    80,
+    "support tickets labeled for distillation"
+   ],
+   [
+    6,
+    "interactive demos in your browser"
+   ]
+  ],
+  "cta_final": "Have an LLM idea that needs to survive production?",
+  "badge_demo": "Interactive demo",
+  "badge_real": "Real results",
+  "terminal": [
+   [
+    "bulwark eval --scenarios 9 --model small-free",
+    "attacks that worked: 2 of 9  →  0 of 9 with Bulwark"
+   ],
+   [
+    "pii-shield eval --docs 202 --types 13",
+    "PII values reaching the provider: 1.8%  (patterns alone: 57%)"
+   ],
+   [
+    "distillery route --student qwen2.5-0.5b",
+    "router 73.8% vs teacher 75.0%  |  student alone 46.2%  ✗ not enough"
+   ],
+   [
+    "docuchat ask \"what is the CEO salary?\"",
+    "I don't know. Nothing in your documents answers this."
+   ],
+   [
+    "support-autopilot run --ticket refund",
+    "refund $240 > $100  →  ⏸ waiting for a human"
+   ]
+  ]
+ },
+ "ru": {
+  "title": "Иван Савченко — AI-проекты, которые публикуют свои цифры",
+  "desc": "Open-source LLM-проекты с живыми демо в браузере: AI-агенты, RAG, файрвол от prompt injection, удаление персональных данных, дистилляция моделей. Реальные замеры и честные выводы.",
+  "eyebrow": "AI-First Full Stack разработчик",
+  "h1": "Делаю LLM‑приложения и публикую цифры — <em>в том числе провалы.</em>",
+  "lead": "У каждого проекта есть интерактивное демо прямо в браузере, ключ API не нужен. А реальные замеры читайте в репозитории.",
+  "cta_demos": "Попробовать демо",
+  "cta_hire": "Работать вместе",
+  "demos_h": "Живые демо",
+  "demos_sub": "Каждое — маленькая рабочая версия open-source проекта. Настоящий проект — на GitHub.",
+  "try": "Попробовать",
+  "soon_h": "Скоро ещё",
+  "soon_p": "Новые AI-проекты появляются здесь по мере выхода. Подпишитесь в LinkedIn, чтобы увидеть первыми.",
+  "principles_h": "Как я работаю",
+  "principles": [
+   [
+    "LLM читает. Код решает.",
+    "Модели хороши в неструктурированном тексте. Бизнес-правила, деньги и права доступа — в обычном, тестируемом коде."
+   ],
+   [
+    "Сначала измерить, потом обещать.",
+    "В каждом проекте есть оценка качества: recall, hit-rate, exact match, стоимость на 1000 запросов."
+   ],
+   [
+    "Честные выводы.",
+    "Если модель на 0,5B оказалась недостаточно хороша, README так и пишет — и показывает, что сработало."
+   ]
+  ],
+  "about_h": "Обо мне",
+  "about_p": "10+ лет в веб-разработке: от фронтенда до full stack. Работаю AI-First: Claude Code и Cursor пишут рутинный код, за мной архитектура, правила, ревью и тесты. Работаю удалённо с командами по всему миру.",
+  "stack_h": "Стек",
+  "contact_h": "Напишите мне",
+  "contact_p": "Открыт к удалённой работе и фриланс-проектам. Нужны LLM-функции в вашем продукте?",
+  "demo_h": "Живое демо",
+  "demo_note": "Небольшая браузерная версия с детерминированной «фейковой» моделью — без ключа API, ничего не уходит с вашего устройства. Настоящий проект — в репозитории.",
+  "what_h": "Какую задачу решает",
+  "how_h": "Как устроено",
+  "results_h": "Измеренные результаты",
+  "verdict_h": "Честный вывод",
+  "repo_btn": "Открыть на GitHub",
+  "share_h": "Поделиться",
+  "copy": "Копировать ссылку",
+  "copied": "Скопировано!",
+  "next_h": "Следующее демо",
+  "all": "Все проекты",
+  "back": "← Все демо",
+  "lang_switch": "EN",
+  "lang_switch_label": "English version",
+  "footer": "Сделано на чистых HTML, CSS и JS. Open source.",
+  "hero_tag": "Open source · AI-First · Full Stack",
+  "hero_note": "Реальные замеры из моих репозиториев",
+  "marquee_h": "Чем я пользуюсь",
+  "counters": [
+   [
+    140,
+    "атак проверено на файрволе"
+   ],
+   [
+    202,
+    "документа размечено вручную под PII"
+   ],
+   [
+    80,
+    "тикетов размечено для дистилляции"
+   ],
+   [
+    6,
+    "интерактивных демо в браузере"
+   ]
+  ],
+  "cta_final": "Есть идея на LLM, которая должна пережить продакшн?",
+  "badge_demo": "Интерактивное демо",
+  "badge_real": "Реальные результаты",
+  "terminal": [
+   [
+    "bulwark eval --scenarios 9 --model small-free",
+    "атак прошло: 2 из 9  →  0 из 9 с Bulwark"
+   ],
+   [
+    "pii-shield eval --docs 202 --types 13",
+    "персональных данных дошло до провайдера: 1,8%  (одни паттерны: 57%)"
+   ],
+   [
+    "distillery route --student qwen2.5-0.5b",
+    "роутер 73,8% против 75,0% у учителя  |  ученик сам: 46,2%  ✗ мало"
+   ],
+   [
+    "docuchat ask \"какая зарплата у CEO?\"",
+    "Я не знаю. В ваших документах нет ответа."
+   ],
+   [
+    "support-autopilot run --ticket refund",
+    "возврат $240 > $100  →  ⏸ ждём человека"
+   ]
+  ]
+ }
+}

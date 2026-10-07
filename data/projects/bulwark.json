@@ -1,0 +1,61 @@
+{
+ "id": "bulwark",
+ "order": 1,
+ "name": "Bulwark",
+ "repo": "https://github.com/gelevanog/llm-guardrails-firewall",
+ "stack": [
+  "Python",
+  "OpenAI-compatible gateway",
+  "Classifiers"
+ ],
+ "og": "assets/og/bulwark.png",
+ "demo": "bulwark",
+ "en": {
+  "title": "Hidden text in an email can make an AI agent leak data",
+  "tag": "An LLM firewall against prompt injection, jailbreaks and data exfiltration.",
+  "problem": "An assistant that reads your inbox also reads text you cannot see: white-on-white lines in a newsletter that tell it to leak your other emails. Some models simply obey.",
+  "how": [
+   "Input layer: hidden text is stripped and injected instructions are quarantined before the model sees them.",
+   "Output layer: links and images that would carry private data out are blocked.",
+   "Tool layer: an agent may only call the tools, and send to the recipients, that the user allowed."
+  ],
+  "verdict": "On a 9-scenario email-agent test, successful attacks fell from 2/9 to 0/9 on a small model and from 9/9 to 0/9 on a deliberately gullible one. A large free model resisted everything alone. One benign newsletter was quarantined by mistake — the false-positive trade-off is measured, not hidden.",
+  "demo_title": "Can you get an attack past the firewall?",
+  "demo_intro": "A gullible assistant summarises three emails. One has hidden text. Turn Bulwark on and off, then write your own attack."
+ },
+ "ru": {
+  "title": "Скрытый текст в письме может заставить AI-агента слить данные",
+  "tag": "Файрвол для LLM против prompt injection, джейлбрейков и утечек данных.",
+  "problem": "Ассистент, который читает вашу почту, читает и невидимый вам текст: белые строки на белом фоне в рассылке, которые велят ему утечь ваши письма. Некоторые модели просто подчиняются.",
+  "how": [
+   "Входной слой: скрытый текст вырезается, а внедрённые инструкции уходят в карантин до того, как их увидит модель.",
+   "Выходной слой: ссылки и картинки, которые вынесли бы приватные данные, блокируются.",
+   "Слой инструментов: агент вызывает только разрешённые инструменты и пишет только разрешённым адресатам."
+  ],
+  "verdict": "На тесте из 9 сценариев успешных атак стало 0/9 вместо 2/9 на малой модели и вместо 9/9 на заведомо «доверчивой». Большая бесплатная модель устояла и сама. Одну безобидную рассылку файрвол по ошибке отправил в карантин — компромисс по ложным срабатываниям измерен, а не скрыт.",
+  "demo_title": "Сможете провести атаку мимо файрвола?",
+  "demo_intro": "Доверчивый ассистент делает сводку по трём письмам. В одном — скрытый текст. Включайте и выключайте Bulwark, потом напишите свою атаку."
+ },
+ "stats": [
+  [
+   "2/9 → 0/9",
+   "small model, attacks that worked",
+   "малая модель, успешные атаки"
+  ],
+  [
+   "9/9 → 0/9",
+   "gullible model",
+   "«доверчивая» модель"
+  ],
+  [
+   "0.94",
+   "recall, 140 attacks / 80 benign",
+   "recall, 140 атак / 80 обычных"
+  ],
+  [
+   "8.8%",
+   "false positives",
+   "ложные срабатывания"
+  ]
+ ]
+}

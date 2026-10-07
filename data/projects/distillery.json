@@ -1,0 +1,61 @@
+{
+ "id": "distillery",
+ "order": 3,
+ "name": "Distillery",
+ "repo": "https://github.com/gelevanog/llm-distillation-pipeline",
+ "stack": [
+  "Python",
+  "LoRA / PEFT",
+  "Qwen2.5-0.5B"
+ ],
+ "og": "assets/og/distillery.png",
+ "demo": "distillery",
+ "en": {
+  "title": "I tried to replace a 120B LLM with a 0.5B model. Here are the numbers.",
+  "tag": "Distill a large LLM into a small, cheap model for one task, and measure whether it is good enough.",
+  "problem": "An expensive LLM call on every support ticket adds up. A small model you run yourself could be cheaper — if it is good enough. Most teams guess; this pipeline measures.",
+  "how": [
+   "The teacher (a large model) labels tickets; the labels become training data.",
+   "A small student (Qwen2.5-0.5B) is fine-tuned with LoRA on a CPU in about one hour.",
+   "A router sends each ticket to the student first and falls back to the teacher when unsure."
+  ],
+  "verdict": "Fine-tuning took the student from unusable (1.2%) to 46.2% exact match, but that is not enough to replace the teacher (75.0%), and on a CPU it was not even cheaper than a small paid API model ($0.70 vs $0.29 per 1,000 tickets). The router still lets the student keep 21% of the traffic at 73.8% quality. Next step: a bigger student on a GPU.",
+  "demo_title": "Exact match on 80 hand-labeled tickets",
+  "demo_intro": "Real results from the repository, not a simulation. Hover or tap a bar."
+ },
+ "ru": {
+  "title": "Я пробовал заменить LLM на 120B моделью на 0,5B. Вот цифры.",
+  "tag": "Дистилляция большой LLM в небольшую дешёвую модель под одну задачу — с замером, достаточно ли она хороша.",
+  "problem": "Дорогой вызов LLM на каждый тикет поддержки быстро складывается в сумму. Небольшая своя модель могла бы быть дешевле — если она достаточно хороша. Большинство команд гадает; этот пайплайн измеряет.",
+  "how": [
+   "Учитель (большая модель) размечает тикеты; разметка становится обучающими данными.",
+   "Небольшой ученик (Qwen2.5-0.5B) дообучается с LoRA на CPU примерно за час.",
+   "Роутер сначала отдаёт тикет ученику и переключается на учителя, когда не уверен."
+  ],
+  "verdict": "Дообучение подняло ученика с негодных 1,2% до 46,2% exact match, но этого мало, чтобы заменить учителя (75,0%), а на CPU он не оказался даже дешевле небольшой платной API-модели ($0,70 против $0,29 за 1000 тикетов). Роутер всё же оставляет ученику 21% трафика при качестве 73,8%. Следующий шаг — ученик побольше на GPU.",
+  "demo_title": "Exact match на 80 размеченных вручную тикетах",
+  "demo_intro": "Реальные результаты из репозитория, не симуляция. Наведите или нажмите на столбец."
+ },
+ "stats": [
+  [
+   "1.2% → 46.2%",
+   "student, before → after LoRA",
+   "ученик до → после LoRA"
+  ],
+  [
+   "73.8%",
+   "router, vs 75.0% for the teacher",
+   "роутер, против 75,0% у учителя"
+  ],
+  [
+   "21%",
+   "of tickets kept by the student",
+   "тикетов остаётся у ученика"
+  ],
+  [
+   "$0.70",
+   "per 1,000 tickets on a CPU VM",
+   "за 1000 тикетов на CPU-VM"
+  ]
+ ]
+}

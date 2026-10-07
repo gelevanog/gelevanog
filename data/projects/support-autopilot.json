@@ -1,0 +1,58 @@
+{
+ "id": "support-autopilot",
+ "order": 4,
+ "name": "Support Autopilot",
+ "repo": "https://github.com/gelevanog/support-agent-langgraph",
+ "stack": [
+  "Python",
+  "LangGraph",
+  "FastAPI",
+  "PostgreSQL"
+ ],
+ "og": "assets/og/support-autopilot.png",
+ "demo": "support-autopilot",
+ "en": {
+  "title": "The best AI agent knows when to stop",
+  "tag": "An AI agent that resolves routine support tickets end to end and asks a human before anything risky.",
+  "problem": "Support teams answer the same few questions all day: where is my order, I want a refund, change my address. Each one means opening the order system, checking the policy, acting and writing a polite reply.",
+  "how": [
+   "The LLM triages the ticket into a validated structure and chooses which read-only tools to call (LangGraph).",
+   "Plain Python code applies the refund and shipping rules — the model never decides money.",
+   "Risky cases (large refund, VIP, angry message, unverified sender) pause for one-click Approve / Reject. Every step is logged."
+  ],
+  "verdict": "The model is good at reading messy text; code is good at “refund over $100 needs approval”. Keeping them apart makes the agent predictable and auditable.",
+  "demo_title": "Run a ticket through the agent",
+  "demo_intro": "Pick a ticket. Watch the agent triage, look things up and apply the rules. Risky ones stop and wait for you."
+ },
+ "ru": {
+  "title": "Лучший AI-агент знает, когда остановиться",
+  "tag": "AI-агент, который сам решает рутинные обращения в поддержку и спрашивает человека перед рискованным действием.",
+  "problem": "Поддержка целый день отвечает на одни и те же вопросы: где мой заказ, хочу возврат, поменяйте адрес. Каждый раз — открыть систему заказов, свериться с политикой, сделать действие и вежливо ответить.",
+  "how": [
+   "LLM разбирает тикет в валидированную структуру и выбирает, какие read-only инструменты вызвать (LangGraph).",
+   "Обычный Python-код применяет правила возвратов и доставки — деньги модель не решает.",
+   "Рискованные случаи (крупный возврат, VIP, злое письмо, непроверенный отправитель) ждут Approve / Reject одним кликом. Каждый шаг логируется."
+  ],
+  "verdict": "Модель хороша в неструктурированном тексте; код хорош в «возврат больше $100 требует одобрения». Разделение делает агента предсказуемым и проверяемым.",
+  "demo_title": "Прогоните тикет через агента",
+  "demo_intro": "Выберите тикет. Смотрите, как агент разбирает его, делает запросы и применяет правила. Рискованные останавливаются и ждут вас."
+ },
+ "stats": [
+  [
+   "4",
+   "risk triggers pause the agent",
+   "триггера риска останавливают агента"
+  ],
+  [
+   "40",
+   "labelled tickets in the evaluation suite",
+   "размеченных тикетов в оценке качества"
+  ],
+  [
+   "Every step",
+   "logged in the audit trail",
+   "логируется в журнале аудита",
+   "Каждый шаг"
+  ]
+ ]
+}
