@@ -1,0 +1,72 @@
+{
+ "id": "ai-voice-receptionist",
+ "order": 7,
+ "name": "Callie",
+ "repo": "https://github.com/gelevanog/ai-voice-receptionist",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "faster-whisper",
+  "Kokoro-82M"
+ ],
+ "og": "assets/og/ai-voice-receptionist.png",
+ "demo": "ai-voice-receptionist",
+ "tags": [
+  "voice",
+  "agents"
+ ],
+ "en": {
+  "title": "An AI receptionist passed 16 of 23 simulated calls; 5 of the 7 failures were mishearing",
+  "tag": "Callie takes browser calls and is built for phone calls (Twilio, not yet tested on a live call): it books, moves and cancels appointments after a read-back and hands off to a person when it should.",
+  "problem": "A dental practice, a garage or a salon misses calls after hours, at lunch and while the front desk is busy. The project's premise, which it does not measure, is that many callers who reach voicemail leave no message and ring the next business instead. A voice agent that picks up must also never invent an opening or book something the caller did not confirm.",
+  "how": [
+   "A streaming voice pipeline: Silero VAD, faster-whisper and Kokoro-82M run on CPU, and the language model is any OpenAI-compatible endpoint, Anthropic or a free OpenRouter model.",
+   "Rules run before the model: emergencies, angry callers and requests for a person are transferred, and a plain “yes” to a read-back is executed by a rule without another model call.",
+   "Safety is enforced in code: times come only from calendar tool results, dates are parsed by a deterministic parser, and nothing is written until the caller's very next reply is a clear yes after a read-back."
+  ],
+  "verdict": "On 23 simulated calls with free models, 16 passed (70%). Every calendar change had a read-back and a yes (8 of 8), no time was booked that a tool had not offered, and all 3 escalations reached a person. That counts process, not outcomes: one of the four booked names was still misspelled by speech recognition, because the simulated caller answered “That's correct” to a wrong read-back. Of the 7 failures, five were speech-recognition errors (four with names and phone numbers, one an “mm-hmm” taken for an interruption) and two came from the free model, which once booked a second appointment instead of moving one and once dropped a detail the caller gave (after which the caller model lost the thread too). A guard added afterwards refuses the double booking, but it was not re-run on the scenarios. A reply takes 4.7 s at the median (9.4 s at p95) when the model is involved and 1.4 s (1.5 s at p95) when a rule answers; free-tier queueing dominates, with a worst-case first token of 13 s. The callers are LLM-written lines spoken by synthetic voices, and the caller model made mistakes of its own, so 70% is a regression benchmark, not a promise for real traffic. No live Twilio call was made, and Google Calendar was only tested against a mock.",
+  "demo_title": "Call Brightside Dental",
+  "demo_intro": "Type what a caller would say: book a cleaning, ask a question, report an emergency. Then force the model to slip and watch the code refuse. Speech is skipped, and a keyword matcher plays the model."
+ },
+ "ru": {
+  "title": "AI-ресепшионист прошёл 16 из 23 симулированных звонков, 5 из 7 провалов — ошибки распознавания речи",
+  "tag": "Callie принимает браузерные звонки и рассчитана на телефонные (Twilio, на живом звонке пока не проверялось): записывает, переносит и отменяет приёмы после повтора деталей и передаёт разговор человеку, когда нужно.",
+  "problem": "Стоматология, автосервис или салон пропускают звонки вне рабочего времени, в обед и пока администратор занят. Исходная посылка проекта, которую он не измеряет: многие, попав на автоответчик, не оставляют сообщения и звонят следующей компании. Голосовой агент, который берёт трубку, при этом не должен выдумывать свободное время и записывать то, что клиент не подтвердил.",
+  "how": [
+   "Потоковый голосовой конвейер: Silero VAD, faster-whisper и Kokoro-82M работают на CPU, а языковая модель — любой OpenAI-совместимый endpoint, Anthropic или бесплатная модель OpenRouter.",
+   "Правила срабатывают раньше модели: экстренные случаи, злые клиенты и просьбы позвать человека переводятся на сотрудника, а простое «да» в ответ на повтор деталей исполняет правило без ещё одного вызова модели.",
+   "Безопасность обеспечивает код: время берётся только из ответов календаря, даты разбирает детерминированный парсер, и ничего не записывается, пока следующей репликой клиент чётко не скажет «да» после повтора деталей."
+  ],
+  "verdict": "На 23 симулированных звонках с бесплатными моделями успешно прошли 16 (70%). Каждое изменение календаря шло после повтора деталей и «да» (8 из 8), ни одно время, которого не предлагал инструмент, не записано, и все 3 эскалации дошли до человека. Это проверка процесса, а не результата: одно из четырёх записанных имён распознавание речи всё же исказило, потому что симулированный звонящий ответил «That's correct» на неверный повтор. Из 7 провалов пять — ошибки распознавания речи (в четырёх имена и номера телефонов, в одном «mm-hmm» принято за перебивание), два — вина бесплатной модели: однажды она записала второй приём вместо переноса, а в другой раз потеряла деталь, названную клиентом (после чего нить потерял и сам звонящий). Добавленная позже защита блокирует двойную запись, но на сценариях её не перепроверяли. Ответ занимает в медиане 4,7 с (p95 — 9,4 с), если участвует модель, и 1,4 с (p95 — 1,5 с), если отвечает правило; главное — очередь бесплатного тарифа, худший первый токен — 13 с. Реплики звонящих написаны LLM и озвучены синтетическими голосами, а модель-звонящий тоже ошибалась, поэтому 70% — это регрессионный тест, а не обещание для реального трафика. Ни одного живого звонка через Twilio не делалось, а Google Calendar проверяли только на заглушке.",
+  "demo_title": "Позвоните в Brightside Dental",
+  "demo_intro": "Пишите то, что сказал бы звонящий: запишитесь на чистку, задайте вопрос, сообщите об экстренном случае. Потом заставьте модель ошибиться и посмотрите, как код её остановит. Речь пропущена, а роль модели играет поиск по ключевым словам."
+ },
+ "stats": [
+  [
+   "16 / 23",
+   "simulated calls handled correctly end to end through audio (70%)",
+   "симулированных звонков обработано верно от начала до конца через аудио (70%)"
+  ],
+  [
+   "8/8 · 0",
+   "changes after a read-back and a yes (a process check: 1 of 4 booked names was still misspelled) · bookings of a time no tool offered",
+   "изменений после повтора деталей и «да» (проверка процесса: 1 из 4 записанных имён всё же с ошибкой) · записей на время, которого не предлагал инструмент"
+  ],
+  [
+   "5 of 7",
+   "failures traced to speech recognition, mostly names and digits",
+   "провалов из-за распознавания речи, в основном имён и цифр",
+   "5 из 7"
+  ],
+  [
+   "4.7 s / 1.4 s",
+   "voice to voice, p50 (p95: 9.4 s / 1.5 s): turns with the free-tier LLM / turns answered by rules",
+   "задержка ответа, p50 (p95: 9,4 с / 1,5 с): ходы с бесплатной LLM / ходы по правилам",
+   "4,7 с / 1,4 с"
+  ]
+ ],
+ "card": {
+  "en": "A voice agent that answers calls, books appointments and hands off to a human.",
+  "ru": "Голосовой агент: отвечает на звонки, записывает на приём и передаёт звонок человеку."
+ }
+}

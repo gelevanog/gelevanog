@@ -1,0 +1,78 @@
+{
+ "id": "text-to-sql-agent",
+ "order": 4,
+ "name": "Tally",
+ "repo": "https://github.com/gelevanog/text-to-sql-agent",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "PostgreSQL",
+  "sqlglot"
+ ],
+ "og": "assets/og/text-to-sql-agent.png",
+ "demo": "text-to-sql-agent",
+ "tags": [
+  "data",
+  "security"
+ ],
+ "en": {
+  "title": "Ask your database in plain English. Built so it can only read, and shows its SQL.",
+  "tag": "Tally turns a business question into checked, read-only SQL, a chart and an answer whose numbers are checked against the result.",
+  "problem": "A manager who wants a number files a request with an analyst and waits, because the data sits in a database only a few people can query. A naive chat-with-your-database tool can run a query that changes data, hand out customer emails and phone numbers, or answer confidently with the wrong number.",
+  "how": [
+   "Retrieval finds the relevant tables, and a reviewed semantic layer supplies what the schema cannot say (net revenue means items minus refunds, in USD, without test accounts). Ambiguous terms such as gross or net, calendar or fiscal quarter get a question before any model call.",
+   "The model writes the SQL, and plain code decides whether it runs: a sqlglot validator (one SELECT, allow-listed tables and functions, no personal-data columns, enforced LIMIT), an EXPLAIN cost guard, then a read-only database login with a timeout.",
+   "SQL errors go back to the model for a bounded self-correction, while writes and personal data are blocked without a second try. Every number in the answer must appear in the result (or in the question or the SQL's literals), otherwise the model rewrites the answer once and then a template answer replaces it. The SQL is shown with a plain-English explanation."
+  ],
+  "verdict": "Measured on a synthetic 18-table database with 117 questions and requests that an AI agent wrote in the same session that built the repository, using the free model nemotron-3-super: execution accuracy was 82.0% as run on the 89 answerable questions. The 87.6% figure is not a clean re-run: after two bugs the run exposed were fixed, only the 7 affected questions were re-asked, on the same benchmark, so 82.0% is the number to trust. Between one answerable question in five (as run) and one in eight (after the re-ask) was missed. Half of the 16 as-run misses were plausible SQL with a subtle error (a LIMIT 1 that drops a tie, a window that starts a month too late), which is why the SQL is shown next to every answer; the rest were provider refusals, a validator false positive, guessed literals that returned NULL, one arguably right answer and a needless clarification. None of the 15 unsafe requests executed anything unsafe, with the real free model or with an offline model that writes whatever it is asked: in the offline case the validator (12) and the cost guard (2) blocked 14 and the offline model itself refused 1. On a 32-question subset the semantic layer was the biggest lever (28.1% without it, 84.4% with it). Two assumptions failed: sending the whole 18-table schema beat retrieval (93.8% vs 84.4%), and the strict number check flagged a correct answer until it was fixed. Other limits: a median answer took 15.1 s, the free tier sometimes refused or rate-limited requests, Claude Opus and Qwen each had a question blocked by the function allow-list (fixed since; those evals were not re-run), and the safety layers protect the data, not the conclusion. Numbers on your schema will differ.",
+  "demo_title": "See which layer stops an unsafe request",
+  "demo_intro": "An offline demo model, gullible on purpose, writes SQL for your request. Watch the validator, the cost guard and the read-only role decide, then switch layers off. The layers here are rough stand-ins written for this page (regexes, placeholder table sizes), not Tally's code. Ask about revenue last quarter to see Tally ask first, and twice: gross or net, then calendar or fiscal quarters."
+ },
+ "ru": {
+  "title": "Спросите базу данных обычными словами. Построен так, чтобы только читать, и показывает свой SQL.",
+  "tag": "Tally превращает бизнес-вопрос в проверенный read-only SQL, график и ответ, числа в котором сверены с результатом.",
+  "problem": "Менеджер, которому нужна цифра, подаёт заявку аналитику и ждёт, потому что данные лежат в базе, которую умеют читать единицы. Наивный чат с базой данных может выполнить запрос, меняющий данные, выдать email и телефоны клиентов или уверенно назвать неверное число.",
+  "how": [
+   "Retrieval находит нужные таблицы, а проверенный семантический слой добавляет то, чего схема сказать не может (чистая выручка = товары минус возвраты, в USD, без тестовых аккаунтов). Неоднозначные термины вроде «валовая или чистая», «календарный или фискальный квартал» вызывают уточняющий вопрос ещё до обращения к модели.",
+   "SQL пишет модель, а выполнять ли его, решает обычный код: валидатор на sqlglot (один SELECT, разрешённые таблицы и функции, никаких колонок с персональными данными, принудительный LIMIT), cost guard на основе EXPLAIN, затем read-only логин в базе с таймаутом.",
+   "Ошибки SQL возвращаются модели для ограниченной самокоррекции, а запись и персональные данные блокируются без второй попытки. Каждое число в ответе должно найтись в результате (или в вопросе, или в литералах SQL), иначе модель переписывает ответ один раз, а затем его заменяет шаблонный ответ. SQL показывается с объяснением простыми словами."
+  ],
+  "verdict": "Замер на синтетической базе из 18 таблиц и 117 вопросах и запросах, которые ИИ-агент написал в той же сессии, что и репозиторий, на бесплатной модели nemotron-3-super: точность выполнения на 89 вопросах с ответом составила 82,0% как есть. Цифра 87,6% — не чистый перезапуск: после исправления двух багов, которые вскрыл прогон, переспросили только 7 затронутых вопросов, на том же бенчмарке, поэтому верить стоит 82,0%. Значит, верного ответа не получил примерно каждый пятый вопрос с ответом (как есть) и каждый восьмой (после переспроса). Половина из 16 промахов в исходном прогоне — правдоподобный SQL с тонкой ошибкой (LIMIT 1 теряет ничью, окно начинается на месяц позже), поэтому SQL показан рядом с каждым ответом; остальные — отказы провайдера, ложное срабатывание валидатора, угаданные значения, вернувшие NULL, один спорно верный ответ и лишнее уточнение. Ни один из 15 небезопасных запросов не выполнил ничего опасного ни с реальной бесплатной моделью, ни с офлайн-моделью, которая пишет всё, что просят: во втором случае валидатор (12) и cost guard (2) остановили 14, а один запрос отклонила сама офлайн-модель. На подборке из 32 вопросов главным рычагом оказался семантический слой (28,1% без него, 84,4% с ним). Два предположения не подтвердились: отправка всей схемы из 18 таблиц обошла retrieval (93,8% против 84,4%), а строгая проверка чисел забраковала верный ответ, пока её не исправили. Другие ограничения: медианный ответ занимал 15,1 с, бесплатный тариф иногда отказывал или упирался в лимиты, у Claude Opus и Qwen по одному вопросу остановил список разрешённых функций (с тех пор исправлено, эти замеры не перезапускали), а защитные слои охраняют данные, а не вывод. На вашей схеме цифры будут другими.",
+  "demo_title": "Посмотрите, какой слой остановит опасный запрос",
+  "demo_intro": "Офлайн-модель, доверчивая нарочно, пишет SQL под ваш запрос. Смотрите, как решают валидатор, cost guard и read-only роль, а потом отключайте слои. Слои здесь — грубые заменители, написанные для этой страницы (регулярки, условные размеры таблиц), а не код Tally. Спросите про выручку за прошлый квартал — Tally сначала спросит, и дважды: валовая или чистая, затем календарные или фискальные кварталы."
+ },
+ "stats": [
+  [
+   "82.0%",
+   "execution accuracy, 89 answerable questions, as run (87.6% after fixes, re-asking only 7 questions)",
+   "точность выполнения, 89 вопросов с ответом, как есть (87,6% после исправлений, переспрошены только 7 вопросов)",
+   "82,0%"
+  ],
+  [
+   "0 of 15",
+   "unsafe queries executed out of 15 hostile requests",
+   "небезопасных запросов выполнено из 15 враждебных",
+   "0 из 15"
+  ],
+  [
+   "28.1% → 84.4%",
+   "without vs with the semantic layer, 32-question subset (9 → 27 right)",
+   "без семантического слоя и с ним, подборка из 32 вопросов (верно 9 → 27)",
+   "28,1% → 84,4%"
+  ],
+  [
+   "93.8% vs 84.4%",
+   "the whole schema beat retrieval on this small schema (same 32 questions)",
+   "вся схема обошла retrieval на этой небольшой схеме (те же 32 вопроса)",
+   "93,8% vs 84,4%"
+  ]
+ ],
+ "short": [
+  "execution accuracy on 89 answerable questions",
+  "точность выполнения на 89 вопросах с ответом"
+ ],
+ "card": {
+  "en": "Ask a database in plain English; get checked read-only SQL, a chart and an answer.",
+  "ru": "Вопрос базе обычным языком: проверенный read-only SQL, график и ответ."
+ }
+}

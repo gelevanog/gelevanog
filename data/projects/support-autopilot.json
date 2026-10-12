@@ -1,13 +1,13 @@
 {
  "id": "support-autopilot",
- "order": 4,
+ "order": 9,
  "name": "Support Autopilot",
  "repo": "https://github.com/gelevanog/support-agent-langgraph",
  "stack": [
   "Python",
   "LangGraph",
   "FastAPI",
-  "PostgreSQL"
+  "SQLite / PostgreSQL"
  ],
  "og": "assets/og/support-autopilot.png",
  "demo": "support-autopilot",
@@ -18,9 +18,9 @@
   "how": [
    "The LLM triages the ticket into a validated structure and chooses which read-only tools to call (LangGraph).",
    "Plain Python code applies the refund and shipping rules — the model never decides money.",
-   "Risky cases (large refund, VIP, angry message, unverified sender) pause for one-click Approve / Reject. Every step is logged."
+   "Risky cases (large refund, VIP, angry refund request, unverified sender) pause for one-click Approve / Reject; a different sender or an angry complaint is escalated instead. Every step is logged."
   ],
-  "verdict": "The model is good at reading messy text; code is good at “refund over $100 needs approval”. Keeping them apart makes the agent predictable and auditable.",
+  "verdict": "The model is good at reading messy text; code is good at “refund over $100 needs approval”. The split held: none of Qwen 3.7 Plus's 11 wrong decisions ran an action the labels forbid. But the rules only act on what the model understood. On the 40 labelled tickets, intent accuracy was 97.5% for Claude Haiku 5.5 and 67.5% for Qwen 3.7 Plus (below the 90% of the keyword baseline), and the judge (Claude Opus 5.5) passed only 70% of Haiku's replies: the failed ones invented details or claimed actions that were never taken. The two misses found on gpt-5.4-mini were fixed by editing the prompt on those same tickets and re-checked on 4 cases, not on the full set.",
   "demo_title": "Run a ticket through the agent",
   "demo_intro": "Pick a ticket. Watch the agent triage, look things up and apply the rules. Risky ones stop and wait for you."
  },
@@ -31,9 +31,9 @@
   "how": [
    "LLM разбирает тикет в валидированную структуру и выбирает, какие read-only инструменты вызвать (LangGraph).",
    "Обычный Python-код применяет правила возвратов и доставки — деньги модель не решает.",
-   "Рискованные случаи (крупный возврат, VIP, злое письмо, непроверенный отправитель) ждут Approve / Reject одним кликом. Каждый шаг логируется."
+   "Рискованные случаи (крупный возврат, VIP, злой запрос на возврат, непроверенный отправитель) ждут Approve / Reject одним кликом; другой отправитель или злая жалоба вместо этого эскалируются. Каждый шаг логируется."
   ],
-  "verdict": "Модель хороша в неструктурированном тексте; код хорош в «возврат больше $100 требует одобрения». Разделение делает агента предсказуемым и проверяемым.",
+  "verdict": "Модель хороша в неструктурированном тексте; код хорош в «возврат больше $100 требует одобрения». Разделение выдержало: ни одно из 11 неверных решений Qwen 3.7 Plus не выполнило действие, запрещённое разметкой. Но правила работают с тем, что поняла модель. На 40 размеченных тикетах точность определения намерения: 97.5% у Claude Haiku 5.5 и 67.5% у Qwen 3.7 Plus (ниже 90% у простого keyword-агента), а судья (Claude Opus 5.5) пропустил лишь 70% ответов Haiku: в провалившихся были выдуманные детали или заявления о действиях, которых не было. Два промаха, найденные на gpt-5.4-mini, исправили правкой промпта на тех же тикетах и перепроверили на 4 кейсах, а не на всём наборе.",
   "demo_title": "Прогоните тикет через агента",
   "demo_intro": "Выберите тикет. Смотрите, как агент разбирает его, делает запросы и применяет правила. Рискованные останавливаются и ждут вас."
  },
@@ -45,14 +45,31 @@
   ],
   [
    "40",
-   "labelled tickets in the evaluation suite",
-   "размеченных тикетов в оценке качества"
+   "labelled tickets in the evaluation suite; the prompt was fixed on these same tickets",
+   "размеченных тикетов в оценке качества; на них же правили промпт"
   ],
   [
    "Every step",
    "logged in the audit trail",
    "логируется в журнале аудита",
    "Каждый шаг"
+  ],
+  [
+   "70%",
+   "of Claude Haiku 5.5 replies passed the judge, with 97.5% intent accuracy",
+   "ответов Claude Haiku 5.5 прошли судью при 97.5% точности намерения"
+  ],
+  [
+   "67.5%",
+   "Qwen 3.7 Plus intent accuracy on the same 40 tickets, below the 90% keyword baseline",
+   "точность намерения Qwen 3.7 Plus на тех же 40 тикетах, ниже 90% у keyword-базы"
   ]
- ]
+ ],
+ "tags": [
+  "agents"
+ ],
+ "card": {
+  "en": "An AI agent that resolves routine support tickets and asks a human before anything risky.",
+  "ru": "AI-агент решает рутинные обращения в поддержку и спрашивает человека перед рискованным."
+ }
 }

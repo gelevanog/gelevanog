@@ -17,6 +17,8 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const pagePath = (lang, sub) => (lang === 'ru' ? 'ru/' : '') + sub;
 const up = (p) => '../'.repeat((p.match(/\//g) || []).length) || './';
 const prefix = (lang, r) => r + (lang === 'ru' ? 'ru/' : '');
+const ruNum = v => String(v).replace(/(\d)\.(\d)/g, '$1,$2');
+const val = (s, lang) => (lang === 'ru' ? ruNum(s[3] || s[0]) : s[0]);
 const art = (p, r) => `${r}assets/art/${p.id}.webp`;
 
 function layout({ lang, sub, title, desc, og, body, demo }) {
@@ -64,11 +66,11 @@ ${demo ? `<script type="module" src="${r}assets/boot.js"></script>` : ''}
 
 function card(lang, p, r, i) {
   const t = site[lang], c = p[lang], s = p.stats[0];
-  return `<a class="card reveal ${i === 0 ? 'big' : ''}" style="--d:${i * 70}ms" href="${prefix(lang, r)}p/${p.id}/">
+  return `<a class="card reveal ${i === 0 ? 'big' : ''}" data-tags="${esc((p.tags || []).join(' '))}" style="--d:${Math.min(i, 6) * 70}ms" href="${prefix(lang, r)}p/${p.id}/">
   <div class="art"><img src="${art(p, r)}" alt="" loading="${i < 3 ? 'eager' : 'lazy'}" width="2000" height="1250"></div>
   <div class="cb">
-    <div class="pill"><b>${esc(lang === 'ru' && s[3] ? s[3] : s[0])}</b><i>${esc(lang === 'ru' ? s[2] : s[1])}</i></div>
-    <div class="cn">${esc(p.name)}</div><div class="ct">${esc(c.tag)}</div>
+    <div class="pill"><b>${esc(val(s, lang))}</b><i>${esc(lang === 'ru' ? (p.short ? p.short[1] : s[2]) : (p.short ? p.short[0] : s[1]))}</i></div>
+    <div class="cn">${esc(p.name)}</div><div class="ct">${esc((p.card && p.card[lang]) || c.tag)}</div>
     <div class="cg">${esc(t.try)} <span>→</span></div>
   </div></a>`;
 }
@@ -78,6 +80,9 @@ function homePage(lang) {
   const r = up(pagePath(lang, ''));
   const stack = [...site.stack, ...projects.flatMap(p => p.stack)];
   const uniq = [...new Set(stack)];
+  const demoCount = projects.filter(p => p.demo && p.demo !== 'distillery').length;
+  const tagsUsed = ['security', 'rag', 'agents', 'data', 'voice', 'ops'].filter(k => projects.some(p => (p.tags || []).includes(k)));
+  const soonSpan = (3 - ((projects.length + 1) % 3)) % 3 || 3;
   const body = `<main>
 <section class="hero"><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
   <img class="hero-art" src="${r}assets/art/hero.webp" alt="" width="2752" height="1536">
@@ -90,17 +95,19 @@ function homePage(lang) {
     </div>
     <div class="term" aria-label="${esc(t.hero_note)}">
       <div class="term-bar"><i></i><i></i><i></i><span>${esc(t.hero_note)}</span></div>
-      <pre class="term-body" id="term" data-lines="${esc(JSON.stringify(t.terminal))}"></pre>
+      <pre class="term-body" id="term" data-lines="${esc(JSON.stringify(t.terminal))}">${t.terminal.slice(0, 3).map(([c0, o]) => `<span class="p">$</span> ${esc(c0)}\n<span class="o">${esc(o)}</span>`).join('\n\n')}</pre>
     </div>
   </div>
 </section>
-<section class="counters"><div class="wrap cgrid">${t.counters.map(([n, l]) => `<div class="cnt reveal"><b data-count="${n}">${n}</b><span>${esc(l)}</span></div>`).join('')}</div></section>
+<section class="counters"><div class="wrap cgrid">${t.counters.map(([n, l], i) => (i === 3 ? [demoCount, l] : [n, l])).map(([n, l]) => `<div class="cnt reveal"><b data-count="${n}">${n}</b><span>${esc(l)}</span></div>`).join('')}</div></section>
 <section id="demos"><div class="wrap">
   <h2 class="reveal">${esc(t.demos_h)}</h2><p class="sub reveal">${esc(t.demos_sub)}</p>
-  <div class="bento">${projects.map((p, i) => card(lang, p, r, i)).join('')}
+  <div class="filters reveal" role="group" aria-label="${esc(t.filters_label)}"><button class="chipbtn on" data-tag="all" aria-pressed="true">${esc(t.filters.all)}</button>${tagsUsed.map(k => `<button class="chipbtn" data-tag="${k}" aria-pressed="false">${esc(t.filters[k])}</button>`).join('')}</div>
+  <p id="fcount" class="sr-only" role="status" aria-live="polite"></p>
+  <div class="bento" id="bento" style="--soon-span:${soonSpan}">${projects.map((p, i) => card(lang, p, r, i)).join('')}
   <a class="card soon reveal" href="${site.links.linkedin}"><div class="cb"><div class="cn">${esc(t.soon_h)}</div><div class="ct">${esc(t.soon_p)}</div><div class="cg">LinkedIn <span>→</span></div></div></a></div>
 </div></section>
-<section class="marq" aria-label="${esc(t.marquee_h)}"><div class="track">${[0, 1].map(() => uniq.map(s => `<span>${esc(s)}</span>`).join('')).join('')}</div></section>
+<section class="marq" aria-hidden="true"><div class="track">${[0, 1].map(() => uniq.map(s => `<span>${esc(s)}</span>`).join('')).join('')}</div></section>
 <section><div class="wrap"><h2 class="reveal">${esc(t.principles_h)}</h2>
   <div class="cols">${t.principles.map(([h, p], i) => `<div class="col reveal" style="--d:${i * 90}ms"><div class="num">0${i + 1}</div><h3>${esc(h)}</h3><p>${esc(p)}</p></div>`).join('')}</div></div></section>
 <section><div class="wrap two">
@@ -124,9 +131,9 @@ function projectPage(lang, p, idx) {
 <div class="wrap">
 <a class="back" href="${prefix(lang, r)}#demos">${esc(t.back)}</a>
 <div class="eyebrow"><span class="ping"></span>${esc(p.name)}</div>
-<h1 class="ph">${esc(c.title)}</h1>
+<h1 class="ph${c.title.length > 90 ? ' long' : ''}">${esc(c.title)}</h1>
 <p class="lead">${esc(c.tag)}</p>
-<div class="stats">${p.stats.map(s => `<div class="stat reveal"><div class="sv">${esc(lang === 'ru' && s[3] ? s[3] : s[0])}</div><div class="sl">${esc(lang === 'ru' ? s[2] : s[1])}</div></div>`).join('')}</div>
+<div class="stats">${p.stats.map(s => `<div class="stat reveal"><div class="sv">${esc(val(s, lang))}</div><div class="sl">${esc(lang === 'ru' ? s[2] : s[1])}</div></div>`).join('')}</div>
 </div></section>
 <div class="wrap">
 <section class="demo reveal" id="demo"><div class="demo-h"><span class="live"><i></i>${esc(p.demo === 'distillery' ? t.badge_real : t.badge_demo)}</span><h2>${esc(c.demo_title)}</h2></div><p class="sub">${esc(c.demo_intro)}</p>

@@ -1,0 +1,78 @@
+{
+ "id": "ai-web-scraper",
+ "order": 8,
+ "name": "Sift",
+ "repo": "https://github.com/gelevanog/ai-web-scraper",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "Playwright",
+  "PostgreSQL"
+ ],
+ "og": "assets/og/ai-web-scraper.png",
+ "demo": "ai-web-scraper",
+ "tags": [
+  "data",
+  "agents"
+ ],
+ "en": {
+  "title": "A scraper that notices when a site is redesigned — and checks its own repair against old records",
+  "tag": "Describe the data you want in plain English, get clean typed JSON from public websites you are allowed to crawl, with the source of every value.",
+  "problem": "Hand-written scrapers break when a site renames a class, and quietly return empty fields until someone notices. Asking an LLM about every page avoids that, but a 10,000-page catalog becomes 10,000 model calls and a bill that grows with every crawl.",
+  "how": [
+   "A model proposes a typed schema from your sentence, then reads a few sample pages once and writes CSS/XPath rules; code validates them on 2 or 3 pages before trusting them.",
+   "Code runs the rules on every page, drops hidden decoys and text aimed at AI, normalizes money, dates and units, and records the page, rule and raw text behind each value.",
+   "When a page stops matching, Sift re-learns the rules and accepts them only if they largely reproduce the records it already had (90% of values agree, no field off on more than 20% of records). If not, it says so and falls back to direct extraction."
+  ],
+  "verdict": "On a synthetic web of 47 fictional sites (learned rules on 37, direct extraction on 10), field accuracy was 99.2% with 55 model calls for 183 pages. After a redesign, the old rules found only 15% of the records on the 37 sites with learned rules. With a free model (Nemotron 3 Super), Sift noticed the change on 37 of 37 and verified its own repair on 31; counting the 6 that fell back to direct extraction, 95.2% of the records came back at 99.8% field accuracy. Of those 6, one register lost 15% of its rows and one infinite-scroll page produced nothing. Healing depends on the model: on a 44-site subset the free model verified 28 of 34 repairs and Claude Haiku 5.5 verified 31 of 34. Verification is evidence, not a guarantee: it once passed a repair that read the lower salary into the upper one on every posting (now every field must agree), and a repair can pass and still lose detail, as one shop healed by Haiku lost its half-star ratings. The benchmark is cleaner than the real web and was written and labelled by an AI agent in the same session as the code; its first run scored 90.7% and verified 27 of 36 repairs, and the numbers above come after fixing what that run exposed. The PII guard removes emails and phone numbers, not names. Read the numbers as evidence that the mechanisms work, not as a forecast for your site.",
+  "demo_title": "Redesign a shop. Can you break the self-healing?",
+  "demo_intro": "A fictional kitchen shop with a hidden decoy and a planted prompt injection. A stand-in model writes the extraction rules once. Redesign the page, watch the old rules fail and the repair get verified, then break it with your own HTML."
+ },
+ "ru": {
+  "title": "Парсер, который замечает редизайн сайта — и сверяет собственный ремонт со старыми записями",
+  "tag": "Опишите нужные данные обычным языком — получите чистый типизированный JSON с публичных сайтов, которые вам разрешено обходить, с источником каждого значения.",
+  "problem": "Написанные вручную парсеры ломаются, когда сайт переименовывает класс, и тихо возвращают пустые поля, пока кто-то не заметит. Спрашивать LLM про каждую страницу — выход, но каталог из 10 000 страниц превращается в 10 000 вызовов модели и счёт, который растёт с каждым обходом.",
+  "how": [
+   "Модель предлагает типизированную схему по вашей фразе, один раз читает несколько страниц-образцов и пишет CSS/XPath-правила; код проверяет их на 2–3 страницах, прежде чем довериться.",
+   "Код применяет правила ко всем страницам, отбрасывает скрытые приманки и текст, адресованный ИИ, нормализует деньги, даты и единицы и записывает страницу, правило и сырой текст за каждым значением.",
+   "Когда страница перестаёт подходить, Sift переобучает правила и принимает их, только если они в основном воспроизводят уже извлечённые записи (совпадает 90% значений, ни одно поле не расходится больше чем в 20% записей). Если нет — говорит об этом и переходит на прямое извлечение."
+  ],
+  "verdict": "На синтетическом вебе из 47 вымышленных сайтов (выученные правила на 37, прямое извлечение на 10) точность по полям составила 99,2% при 55 вызовах модели на 183 страницы. После редизайна старые правила находили лишь 15% записей на 37 сайтах с выученными правилами. С бесплатной моделью (Nemotron 3 Super) Sift заметил смену на 37 из 37 и проверил собственное исправление на 31; если считать 6 сайтов, откатившихся на прямое извлечение, вернулось 95,2% записей при точности по полям 99,8%. Из этих 6 в одном реестре потеряно 15% строк, а страница с бесконечной прокруткой не дала ничего. Самолечение зависит от модели: на подвыборке из 44 сайтов бесплатная модель проверила 28 из 34 исправлений, Claude Haiku 5.5 — 31 из 34. Проверка — свидетельство, а не гарантия: однажды она пропустила исправление, где нижняя зарплата читалась в поле верхней в каждой вакансии (теперь должно совпадать каждое поле), и исправление может пройти проверку и всё же потерять детали: магазин, вылеченный Haiku, потерял половинки звёзд в рейтингах. Бенчмарк чище реального веба и написан и размечен ИИ-агентом в той же сессии, что и код; первый прогон дал 90,7% и 27 проверенных исправлений из 36, а цифры выше получены после исправления того, что он вскрыл. PII-защита вырезает email и телефоны, но не имена. Читайте цифры как свидетельство того, что механизмы работают, а не как прогноз для вашего сайта.",
+  "demo_title": "Сделайте редизайн магазина. Сможете сломать самолечение?",
+  "demo_intro": "Вымышленный кухонный магазин со скрытой приманкой и подброшенной prompt injection. «Модель»-заглушка один раз пишет правила извлечения. Смените вёрстку, посмотрите, как старые правила ломаются, а исправление проверяется, — и сломайте всё своим HTML."
+ },
+ "stats": [
+  [
+   "15% → 95.2%",
+   "records found after a redesign (37 sites): old rules vs self-healing, direct-extraction fallbacks included",
+   "записей найдено после редизайна (37 сайтов): старые правила и самолечение, с учётом отката на прямое извлечение",
+   "15% → 95,2%"
+  ],
+  [
+   "99.2%",
+   "field accuracy on 47 synthetic sites (7,594 of 7,655 values)",
+   "точность по полям на 47 синтетических сайтах (7 594 из 7 655 значений)",
+   "99,2%"
+  ],
+  [
+   "20 ms vs 26 s",
+   "per page, median: code time of learned rules (after one learning call per site, ~18 s median) vs a direct call to a free reasoning model",
+   "на страницу, медиана: время кода выученных правил (после одного обучающего вызова на сайт, медиана ~18 с) и прямой вызов бесплатной модели-рассуждателя",
+   "20 мс vs 26 с"
+  ],
+  [
+   "31 of 37",
+   "redesigned sites healed and verified with a free model; the other 6 fell back",
+   "переделанных сайтов вылечено и проверено бесплатной моделью; остальные 6 откатились",
+   "31 из 37"
+  ]
+ ],
+ "short": [
+  "records found after a redesign (37 sites): old rules vs self-healing, fallbacks included",
+  "записей найдено после редизайна (37 сайтов): старые правила и самолечение, с откатом"
+ ],
+ "card": {
+  "en": "Describe the data you want; get clean structured JSON from a website.",
+  "ru": "Опишите нужные данные обычным языком — получите чистый структурированный JSON с сайта."
+ }
+}

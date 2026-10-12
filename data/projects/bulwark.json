@@ -16,10 +16,10 @@
   "problem": "An assistant that reads your inbox also reads text you cannot see: white-on-white lines in a newsletter that tell it to leak your other emails. Some models simply obey.",
   "how": [
    "Input layer: hidden text is stripped and injected instructions are quarantined before the model sees them.",
-   "Output layer: links and images that would carry private data out are blocked.",
-   "Tool layer: an agent may only call the tools, and send to the recipients, that the user allowed."
+   "Output layer: links and images that would carry private data out are removed or rewritten; leaked system prompts and secrets are caught too.",
+   "Tool layer: an agent may call only allow-listed tools; once untrusted content is in the conversation, risky actions such as sending email wait for a person's approval, and a recipient that appears only in that content is blocked."
   ],
-  "verdict": "On a 9-scenario email-agent test, successful attacks fell from 2/9 to 0/9 on a small model and from 9/9 to 0/9 on a deliberately gullible one. A large free model resisted everything alone. One benign newsletter was quarantined by mistake — the false-positive trade-off is measured, not hidden.",
+  "verdict": "On 9 attack scenarios against an email agent, successful attacks fell from 2/9 to 0/9 on a small free model (one scenario failed in both modes on rate limits) and from 9/9 to 0/9 on a deliberately gullible one. A large free model, and Claude Haiku 5.5, Opus 5.5 and Qwen 3.7 Plus, resisted all 9 on their own, so on strong models Bulwark is defense in depth, not a dramatic before/after. Benign tasks: 8/9 with and without Bulwark on the large model; 3 needed one human approval, and the one failure with Bulwark was a false positive (a quoted attack phrase got part of a security newsletter quarantined). Detection alone is weaker than the headline: recall 0.85 at 5% false positives on the held-out split (40 attacks / 20 benign), 0.94 / 8.8% on the full set that the rules were tuned on, and 0.00 on BIPIA indirect injections. The numbers are measured, failures included.",
   "demo_title": "Can you get an attack past the firewall?",
   "demo_intro": "A gullible assistant summarises three emails. One has hidden text. Turn Bulwark on and off, then write your own attack."
  },
@@ -29,10 +29,10 @@
   "problem": "Ассистент, который читает вашу почту, читает и невидимый вам текст: белые строки на белом фоне в рассылке, которые велят ему утечь ваши письма. Некоторые модели просто подчиняются.",
   "how": [
    "Входной слой: скрытый текст вырезается, а внедрённые инструкции уходят в карантин до того, как их увидит модель.",
-   "Выходной слой: ссылки и картинки, которые вынесли бы приватные данные, блокируются.",
-   "Слой инструментов: агент вызывает только разрешённые инструменты и пишет только разрешённым адресатам."
+   "Выходной слой: ссылки и картинки, которые вынесли бы приватные данные, удаляются или переписываются; утечки системного промпта и секреты тоже ловятся.",
+   "Слой инструментов: агент вызывает только инструменты из белого списка; когда в разговоре появился недоверенный контент, рискованные действия вроде отправки письма ждут одобрения человека, а адресат, встречающийся только в этом контенте, блокируется."
   ],
-  "verdict": "На тесте из 9 сценариев успешных атак стало 0/9 вместо 2/9 на малой модели и вместо 9/9 на заведомо «доверчивой». Большая бесплатная модель устояла и сама. Одну безобидную рассылку файрвол по ошибке отправил в карантин — компромисс по ложным срабатываниям измерен, а не скрыт.",
+  "verdict": "На 9 сценариях атак на почтового агента успешных атак стало 0/9 вместо 2/9 на малой бесплатной модели (один сценарий в обоих режимах не отработал из-за лимитов запросов) и вместо 9/9 на заведомо «доверчивой». Большая бесплатная модель, а также Claude Haiku 5.5, Opus 5.5 и Qwen 3.7 Plus устояли во всех 9 случаях и сами, так что на сильных моделях Bulwark — это эшелонированная защита, а не эффектное «до/после». Безобидные задачи: 8 из 9 и с Bulwark, и без него на большой модели; 3 потребовали одобрения человека, а единственный провал с Bulwark — ложное срабатывание (цитата с фразой-атакой отправила часть рассылки про безопасность в карантин). Одной детекции мало: recall 0,85 при 5% ложных срабатываний на отложенной выборке (40 атак / 20 обычных), 0,94 / 8,8% на полном наборе, на части которого настраивались правила, и 0,00 на внедрённых инструкциях BIPIA. Числа измерены, включая неудачи.",
   "demo_title": "Сможете провести атаку мимо файрвола?",
   "demo_intro": "Доверчивый ассистент делает сводку по трём письмам. В одном — скрытый текст. Включайте и выключайте Bulwark, потом напишите свою атаку."
  },
@@ -48,14 +48,22 @@
    "«доверчивая» модель"
   ],
   [
-   "0.94",
-   "recall, 140 attacks / 80 benign",
-   "recall, 140 атак / 80 обычных"
+   "0.85 / 0.94",
+   "recall: held-out 40 attacks / all 140 (rules were tuned on part of them)",
+   "recall: отложенные 40 атак / все 140 (правила настраивались на части из них)"
   ],
   [
-   "8.8%",
-   "false positives",
-   "ложные срабатывания"
+   "5% / 8.8%",
+   "false positives: held-out 1 of 20 benign / all 80 benign",
+   "ложные срабатывания: отложенные 1 из 20 обычных / все 80 обычных"
   ]
- ]
+ ],
+ "tags": [
+  "security",
+  "agents"
+ ],
+ "card": {
+  "en": "A firewall for LLM apps against prompt injection and data leaks.",
+  "ru": "Файрвол для LLM-приложений против prompt injection и утечек данных."
+ }
 }

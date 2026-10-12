@@ -97,22 +97,40 @@
     "attacks that worked: 2 of 9  →  0 of 9 with Bulwark"
    ],
    [
-    "pii-shield eval --docs 202 --types 13",
-    "PII values reaching the provider: 1.8%  (patterns alone: 57%)"
+    "clearance eval --pairs 330",
+    "pairs where restricted text reached the model: 0 of 330"
+   ],
+   [
+    "tally eval --hostile 15",
+    "unsafe queries executed out of 15 hostile requests: 0"
+   ],
+   [
+    "sift eval --after-redesign 37",
+    "records found after a redesign: old rules 15%  →  self-healing 95.2%"
+   ],
+   [
+    "callie eval --calls 23",
+    "simulated calls handled end to end: 16 of 23"
    ],
    [
     "distillery route --student qwen2.5-0.5b",
-    "router 73.8% vs teacher 75.0%  |  student alone 46.2%  ✗ not enough"
+    "router 73.8% vs free teacher 75.0%  |  student alone 46.2%  ✗ not enough"
    ],
    [
     "docuchat ask \"what is the CEO salary?\"",
     "I don't know. Nothing in your documents answers this."
-   ],
-   [
-    "support-autopilot run --ticket refund",
-    "refund $240 > $100  →  ⏸ waiting for a human"
    ]
-  ]
+  ],
+  "filters": {
+   "all": "All",
+   "security": "Security",
+   "rag": "RAG",
+   "agents": "Agents",
+   "data": "Data",
+   "voice": "Voice",
+   "ops": "Cost & ops"
+  },
+  "filters_label": "Filter projects by topic"
  },
  "ru": {
   "title": "Иван Савченко — AI-проекты, которые публикуют свои цифры",
@@ -193,21 +211,39 @@
     "атак прошло: 2 из 9  →  0 из 9 с Bulwark"
    ],
    [
-    "pii-shield eval --docs 202 --types 13",
-    "персональных данных дошло до провайдера: 1,8%  (одни паттерны: 57%)"
+    "clearance eval --pairs 330",
+    "пар, где закрытый текст дошёл до модели: 0 из 330"
+   ],
+   [
+    "tally eval --hostile 15",
+    "небезопасных запросов выполнено из 15 враждебных: 0"
+   ],
+   [
+    "sift eval --after-redesign 37",
+    "записей найдено после редизайна: старые правила 15%  →  самолечение 95,2%"
+   ],
+   [
+    "callie eval --calls 23",
+    "симулированных звонков обработано целиком: 16 из 23"
    ],
    [
     "distillery route --student qwen2.5-0.5b",
-    "роутер 73,8% против 75,0% у учителя  |  ученик сам: 46,2%  ✗ мало"
+    "роутер 73,8% против 75,0% у бесплатного учителя  |  ученик сам: 46,2%  ✗ мало"
    ],
    [
     "docuchat ask \"какая зарплата у CEO?\"",
     "Я не знаю. В ваших документах нет ответа."
-   ],
-   [
-    "support-autopilot run --ticket refund",
-    "возврат $240 > $100  →  ⏸ ждём человека"
    ]
-  ]
+  ],
+  "filters": {
+   "all": "Все",
+   "security": "Безопасность",
+   "rag": "RAG",
+   "agents": "Агенты",
+   "data": "Данные",
+   "voice": "Голос",
+   "ops": "Стоимость и ops"
+  },
+  "filters_label": "Фильтр проектов по теме"
  }
 }

@@ -1,6 +1,6 @@
 {
  "id": "distillery",
- "order": 3,
+ "order": 11,
  "name": "Distillery",
  "repo": "https://github.com/gelevanog/llm-distillation-pipeline",
  "stack": [
@@ -15,24 +15,24 @@
   "tag": "Distill a large LLM into a small, cheap model for one task, and measure whether it is good enough.",
   "problem": "An expensive LLM call on every support ticket adds up. A small model you run yourself could be cheaper — if it is good enough. Most teams guess; this pipeline measures.",
   "how": [
-   "The teacher (a large model) labels tickets; the labels become training data.",
-   "A small student (Qwen2.5-0.5B) is fine-tuned with LoRA on a CPU in about one hour.",
-   "A router sends each ticket to the student first and falls back to the teacher when unsure."
+   "Large models write synthetic tickets and two teachers label them; only tickets where both agree on all 5 fields are kept as training data (435 clean examples from 784 requested seeds).",
+   "A small student (Qwen2.5-0.5B) is fine-tuned with LoRA on 384 synthetic examples, on a CPU, in about one hour (57 minutes).",
+   "A router sends each ticket to the student first and falls back to the teacher when the answer is invalid or the student's confidence is below a threshold."
   ],
-  "verdict": "Fine-tuning took the student from unusable (1.2%) to 46.2% exact match, but that is not enough to replace the teacher (75.0%), and on a CPU it was not even cheaper than a small paid API model ($0.70 vs $0.29 per 1,000 tickets). The router still lets the student keep 21% of the traffic at 73.8% quality. Next step: a bigger student on a GPU.",
+  "verdict": "Fine-tuning took the student from unusable (1.2%) to 46.2% exact match, but that is not enough to replace the teacher (75.0%), and on a CPU it was not even cheaper than the same teacher at its paid list price ($0.70 vs $0.29 per 1,000 tickets; the $0.70 uses an assumed $0.68/h VM price). With the router the student keeps 21% of the tickets and the overall score is 73.8% (76.5% on the tickets it kept); on 80 tickets the 95% interval is about ±7–10 pts. A stronger paid teacher raises the ceiling (Claude Haiku 5.5: 83.8% alone, 82.5% routed; Claude Opus 5.5: 88.8% and 85.0%), but the student was not retrained on its labels, and now it is the student that holds the router back. Next step: a bigger student on a GPU (config included, not run yet).",
   "demo_title": "Exact match on 80 hand-labeled tickets",
   "demo_intro": "Real results from the repository, not a simulation. Hover or tap a bar."
  },
  "ru": {
-  "title": "Я пробовал заменить LLM на 120B моделью на 0,5B. Вот цифры.",
+  "title": "Я пробовал заменить 120B-LLM моделью на 0,5B. Вот цифры.",
   "tag": "Дистилляция большой LLM в небольшую дешёвую модель под одну задачу — с замером, достаточно ли она хороша.",
   "problem": "Дорогой вызов LLM на каждый тикет поддержки быстро складывается в сумму. Небольшая своя модель могла бы быть дешевле — если она достаточно хороша. Большинство команд гадает; этот пайплайн измеряет.",
   "how": [
-   "Учитель (большая модель) размечает тикеты; разметка становится обучающими данными.",
-   "Небольшой ученик (Qwen2.5-0.5B) дообучается с LoRA на CPU примерно за час.",
-   "Роутер сначала отдаёт тикет ученику и переключается на учителя, когда не уверен."
+   "Большие модели пишут синтетические тикеты, а два учителя их размечают; в обучающие данные попадают только тикеты, где оба согласны по всем 5 полям (435 чистых примеров из 784 запрошенных).",
+   "Небольшой ученик (Qwen2.5-0.5B) дообучается с LoRA на 384 синтетических примерах, на CPU, примерно за час (57 минут).",
+   "Роутер сначала отдаёт тикет ученику и переключается на учителя, если ответ невалиден или уверенность ученика ниже порога."
   ],
-  "verdict": "Дообучение подняло ученика с негодных 1,2% до 46,2% exact match, но этого мало, чтобы заменить учителя (75,0%), а на CPU он не оказался даже дешевле небольшой платной API-модели ($0,70 против $0,29 за 1000 тикетов). Роутер всё же оставляет ученику 21% трафика при качестве 73,8%. Следующий шаг — ученик побольше на GPU.",
+  "verdict": "Дообучение подняло ученика с негодных 1,2% до 46,2% exact match, но этого мало, чтобы заменить учителя (75,0%), а на CPU он не оказался даже дешевле того же учителя по платному прайсу ($0,70 против $0,29 за 1000 тикетов; $0,70 посчитано по допущенной цене VM $0,68/ч). С роутером ученик оставляет себе 21% тикетов, общий результат 73,8% (76,5% на тикетах, оставшихся у ученика); на 80 тикетах 95%-й интервал — около ±7–10 п.п. Более сильный платный учитель поднимает планку (Claude Haiku 5.5: 83,8% сам по себе, 82,5% через роутер; Claude Opus 5.5: 88,8% и 85,0%), но ученик на его разметке не переобучался, и теперь именно ученик тянет роутер вниз. Следующий шаг — ученик побольше на GPU (конфиг есть, но не запускался).",
   "demo_title": "Exact match на 80 размеченных вручную тикетах",
   "demo_intro": "Реальные результаты из репозитория, не симуляция. Наведите или нажмите на столбец."
  },
@@ -44,8 +44,8 @@
   ],
   [
    "73.8%",
-   "router, vs 75.0% for the teacher",
-   "роутер, против 75,0% у учителя"
+   "router, vs 75.0% for the free teacher (80 tickets)",
+   "роутер, против 75,0% у бесплатного учителя (80 тикетов)"
   ],
   [
    "21%",
@@ -54,8 +54,16 @@
   ],
   [
    "$0.70",
-   "per 1,000 tickets on a CPU VM",
-   "за 1000 тикетов на CPU-VM"
+   "per 1,000 tickets on a CPU VM (assumed $0.68/h)",
+   "за 1000 тикетов на CPU-VM (цена $0,68/ч — допущение)"
   ]
- ]
+ ],
+ "tags": [
+  "ops",
+  "data"
+ ],
+ "card": {
+  "en": "Distill a large LLM into a small cheap model for one task and measure if it is good enough.",
+  "ru": "Дистилляция большой LLM в небольшую дешёвую модель под одну задачу — с замером."
+ }
 }

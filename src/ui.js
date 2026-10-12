@@ -40,3 +40,15 @@ if (g && !reduce && matchMedia('(pointer:fine)').matches) {
   addEventListener('pointermove', e => { g.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; g.style.opacity = 1; });
   $$('.card, .stat').forEach(c => c.addEventListener('pointermove', e => { const b = c.getBoundingClientRect(); c.style.setProperty('--mx', e.clientX - b.left + 'px'); c.style.setProperty('--my', e.clientY - b.top + 'px'); }));
 }
+
+// topic filter for the project grid
+const fb = $$('.chipbtn[data-tag]');
+fb.forEach(b => b.addEventListener('click', () => {
+  const tag = b.dataset.tag;
+  fb.forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+  document.getElementById('bento').classList.toggle('filtered', tag !== 'all');
+  $$('#bento .card[data-tags]').forEach(c => { c.hidden = tag !== 'all' && !c.dataset.tags.split(' ').includes(tag); c.classList.add('in'); });
+  const soon = document.querySelector('#bento .soon'); if (soon) soon.hidden = tag !== 'all';
+  const n = $$('#bento .card[data-tags]:not([hidden])').length, fc = document.getElementById('fcount');
+  if (fc) fc.textContent = (document.documentElement.lang === 'ru' ? 'Проектов: ' : 'Projects: ') + n;
+}));

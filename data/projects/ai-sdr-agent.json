@@ -1,0 +1,77 @@
+{
+ "id": "ai-sdr-agent",
+ "order": 5,
+ "name": "Scout",
+ "repo": "https://github.com/gelevanog/ai-sdr-agent",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "PostgreSQL",
+  "Next.js"
+ ],
+ "og": "assets/og/ai-sdr-agent.png",
+ "demo": "ai-sdr-agent",
+ "tags": [
+  "agents",
+  "ops"
+ ],
+ "en": {
+  "title": "An AI sales rep that quotes a source for every fact and drafts cold email for your approval (sending is capture-only)",
+  "tag": "Scout researches a company, scores it against your ideal customer profile and drafts cold email. Each personal detail is a claim tied to a saved quote (or your offer), checked but not guaranteed.",
+  "problem": "Many generic AI email tools skip the research, and when they personalize they can get facts wrong (“congrats on the Series B” to a company that never raised one), which is worse than not personalizing at all. Some also send on their own, which is how a company ends up emailing a competitor, an existing customer or someone who asked not to be contacted. That is the project’s motivation, not a measurement: the repo compares Scout with a generic template (a model judge preferred Scout’s email for 15 of 18 accounts), not with named tools.",
+  "how": [
+   "Research with receipts: a model reads the crawled pages and returns facts, buying signals and people, each with a quote. Plain code keeps a fact only if its quote is on the cited page (or re-attributes it to the page that has it) and throws it away otherwise; dates and freshness come from the page. Rules remove sentences that address AI systems before any model sees the page (tested on 2 planted injections).",
+   "Rules first, model second: a rubric you control (segments, size, regions, disqualifiers, buying signals) scores the account with a reason and a source for every point. A model may nudge the score by at most ±10 points, with cited facts, and never over a disqualifier.",
+   "Draft, check, ask a human: each personal sentence in the email is declared as a claim tied to evidence. Deterministic rules and a model verifier check every claim, and a failing draft is rewritten (up to 2 times by default) or trimmed. Then a person approves, edits or rejects, and sending goes only to a capture server (Mailpit)."
+  ],
+  "verdict": "On a synthetic web of 60 fictional companies, with free models only, the structure held: all 844 quotes were on the cited page, all 59 planted buying signals were found (4 of the 63 extracted signals were not planted ones, 3 of them traps), and nothing could be sent without an approval. The companies, labels, replies and claims were written by an AI agent (Claude) in the same session that wrote the code, so the benchmark is not independent. Where the model is weak, the rules carried it: the model alone routed 9 of 14 hard accounts right; rules first got 13 of 14 as run and 14 of 14 after a fix that this run exposed, scored on the same accounts. Claims that an independent model flags as unsupported fell from 11.5% to 7.6% (6 of 79), not to zero. That was measured on 18 accounts with at most one rewrite per variant (the default is two). The checker is much stricter about the prospect than about the seller’s own offer (“tracking from day one”), though none of the remaining claims is a wrong name, number or date about the prospect. Segment labels are the weakest link: the free model got 49 of 59 right (Claude Haiku 5.5 and Qwen 3.7 Plus: 54), and 2 wrong labels changed the outcome. Its bounded judgment also twice read “CA” (Canada) as California; both accounts stayed qualified. No real website was crawled, so read the numbers as evidence that the mechanisms work, not as a forecast for your market.",
+  "demo_title": "Slip a false claim past the rules",
+  "demo_intro": "A fictional company, the research Scout saved about it and one sentence of a draft email. Write a claim, tick the evidence it cites and see which rules catch it. Some false claims get through the rules, and the demo shows which."
+ },
+ "ru": {
+  "title": "AI-менеджер по продажам: цитата под каждым фактом, черновики холодных писем ждут одобрения (отправка только на capture-сервер)",
+  "tag": "Scout изучает компанию, оценивает её по вашему профилю идеального клиента и пишет холодные письма. Каждая личная деталь — утверждение, привязанное к сохранённой цитате (или к вашему офферу); оно проверяется, но без гарантий.",
+  "problem": "Многие типовые AI-инструменты для рассылок пропускают исследование, а когда персонализируют, могут ошибаться в фактах («поздравляем с раундом Series B» компании, которая его не привлекала), и это хуже, чем не персонализировать вовсе. Некоторые к тому же отправляют письма сами, из-за чего компания пишет конкуренту, действующему клиенту или тому, кто просил её не беспокоить. Это мотивация проекта, а не измерение: репозиторий сравнивает Scout с типовым шаблоном (модель-судья предпочла письмо Scout в 15 случаях из 18), а не с конкретными инструментами.",
+  "how": [
+   "Исследование с «чеками»: модель читает собранные страницы и возвращает факты, сигналы покупки и людей, каждый с цитатой. Обычный код оставляет факт, только если цитата есть на указанной странице (или переносит его на страницу, где она есть), иначе выбрасывает; даты и свежесть берутся со страницы. Правила вырезают предложения, обращённые к ИИ-системам, до того как страницу увидит любая модель (проверено на 2 заложенных инъекциях).",
+   "Сначала правила, потом модель: рубрика, которой управляете вы (сегменты, размер, регионы, дисквалификаторы, сигналы покупки), оценивает компанию с причиной и источником для каждого балла. Модель может сдвинуть оценку не более чем на ±10 баллов, опираясь на цитируемые факты, и никогда — поверх дисквалификатора.",
+   "Черновик, проверка, человек: каждая личная фраза письма объявляется утверждением (claim) с привязкой к доказательствам. Детерминированные правила и модель-верификатор проверяют каждое утверждение, а черновик, не прошедший проверку, переписывается (по умолчанию до 2 раз) или обрезается. Затем человек одобряет, правит или отклоняет, а отправка идёт только на capture-сервер (Mailpit)."
+  ],
+  "verdict": "На синтетическом вебе из 60 вымышленных компаний и только на бесплатных моделях структура выдержала: все 844 цитаты нашлись на указанной странице, все 59 заложенных сигналов покупки найдены (из 63 извлечённых сигналов 4 не были заложенными, 3 из них ловушки), и ничего нельзя было отправить без одобрения. Компании, метки, ответы и утверждения написал ИИ-агент (Claude) в той же сессии, что и код, поэтому бенчмарк не независим. Там, где модель слаба, вытягивали правила: одна модель верно распределила по маршрутам 9 из 14 сложных аккаунтов; сначала правила дали 13 из 14 при прогоне и 14 из 14 после исправления, которое этот прогон и вскрыл, на тех же аккаунтах. Доля утверждений, которые независимая модель считает неподтверждёнными, упала с 11,5% до 7,6% (6 из 79), но не до нуля. Это измерено на 18 аккаунтах не более чем с одним переписыванием на вариант (по умолчанию два). Проверка куда строже к фактам о клиенте, чем к офферу самого продавца («tracking from day one», то есть «отслеживание с первого дня»), хотя среди оставшихся утверждений нет ни одного неверного имени, числа или даты о клиенте. Сегмент компании — самое слабое звено: бесплатная модель определила верно 49 из 59 (Claude Haiku 5.5 и Qwen 3.7 Plus — 54), и 2 неверные метки изменили исход. Ещё её ограниченное суждение дважды прочитало «CA» (Canada) как California (Калифорния); оба аккаунта остались в статусе qualified. Реальные сайты не сканировались, поэтому читайте цифры как свидетельство, что механизмы работают, а не как прогноз для вашего рынка.",
+  "demo_title": "Проведите ложное утверждение мимо правил проверки",
+  "demo_intro": "Вымышленная компания, сохранённое Scout исследование о ней и одно предложение черновика письма. Напишите утверждение, отметьте доказательства, на которые оно ссылается, и посмотрите, какие правила его поймают. Некоторые ложные утверждения правила пропускают, и демо показывает какие."
+ },
+ "stats": [
+  [
+   "11.5% → 7.6%",
+   "claims an independent model flags as unsupported, first drafts → after the claim checker",
+   "утверждений, которые независимая модель считает неподтверждёнными: первые черновики → после проверки",
+   "11,5% → 7,6%"
+  ],
+  [
+   "14/14 vs 9/14",
+   "hard accounts routed right: rules first (13/14 as run, 14/14 after a fix the run exposed) vs the model alone; the 14 are traps, stale and borderline cases",
+   "сложных аккаунтов разобрано верно: сначала правила (13/14 при прогоне, 14/14 после исправления, которое вскрыл прогон) и одна модель; 14 аккаунтов — ловушки, устаревшие и пограничные случаи"
+  ],
+  [
+   "86.2% → 100%",
+   "recall on 29 bad claims, rules alone → rules + model verifier. Precision 100% → 90.6% (3 false alarms); 57 synthetic claims written by the AI that wrote the code",
+   "recall на 29 плохих утверждениях: одни правила → правила + модель-верификатор. Precision 100% → 90,6% (3 ложные тревоги); 57 синтетических утверждений, написанных ИИ, который писал код",
+   "86,2% → 100%"
+  ],
+  [
+   "49 of 59",
+   "company segments the free model labelled right; 2 wrong labels changed the outcome",
+   "сегментов компаний бесплатная модель определила верно; 2 ошибки изменили исход",
+   "49 из 59"
+  ]
+ ],
+ "short": [
+  "claims flagged unsupported by an independent model: first drafts → after the checker",
+  "утверждений, которые независимая модель считает неподтверждёнными: черновики → после проверки"
+ ],
+ "card": {
+  "en": "An AI sales rep that quotes a source for every fact and waits for your approval.",
+  "ru": "AI-менеджер по продажам: источник под каждым фактом, отправка только после вашего одобрения."
+ }
+}

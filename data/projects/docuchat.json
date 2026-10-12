@@ -1,6 +1,6 @@
 {
  "id": "docuchat",
- "order": 5,
+ "order": 10,
  "name": "DocuChat",
  "repo": "https://github.com/gelevanog/docuchat-rag",
  "stack": [
@@ -17,10 +17,10 @@
   "problem": "A general chatbot answers confidently even when it has never seen your files. That is how wrong answers about your contract or policy appear.",
   "how": [
    "Hybrid search: vector search (pgvector) plus full-text, merged with Reciprocal Rank Fusion.",
-   "Answers use only retrieved passages, each cited with file, page and section.",
-   "Retrieval quality is measured with hit-rate and MRR. If nothing relevant is found, it says so."
+   "Answers use only retrieved passages, each cited with file and section (plus page for PDFs).",
+   "Retrieval is measured with hit-rate@k and MRR on 30 golden questions. The prompt tells the model to say “I don't know” when the sources don't cover the question, but that is not measured: none of the 30 questions is unanswerable."
   ],
-  "verdict": "In RAG, most bad answers are search problems, not model problems. Measure retrieval first, then tune the prompt.",
+  "verdict": "Whether re-ranking helps depends on the embedder. With the offline word-matching embedder, a cross-encoder lifted hit@1 on the 12 paraphrased questions from 4/12 to 7/12. With a real embedding model, plain hybrid search got 6/12 and the cross-encoder 7/12, and a cheap lexical re-ranker scored no worse (the gap is within noise). The set is only 30 questions over 3 short documents: a direction, not a benchmark.",
   "demo_title": "Ask the handbook",
   "demo_intro": "A tiny fictional company handbook. Ask something it covers — and something it does not."
  },
@@ -30,18 +30,18 @@
   "problem": "Обычный чат-бот отвечает уверенно, даже если не видел ваших файлов. Так появляются неверные ответы про ваш договор или регламент.",
   "how": [
    "Гибридный поиск: векторный (pgvector) плюс полнотекстовый, объединённые Reciprocal Rank Fusion.",
-   "Ответ строится только из найденных фрагментов, каждый с цитатой: файл, страница, раздел.",
-   "Качество поиска измеряется hit-rate и MRR. Если ничего подходящего нет — так и говорит."
+   "Ответ строится только из найденных фрагментов, каждый с цитатой: файл и раздел (для PDF — ещё и страница).",
+   "Поиск измеряется hit-rate@k и MRR на 30 эталонных вопросах. Промпт требует ответить «Я не знаю», если в источниках нет ответа, но это не измерялось: среди 30 вопросов нет ни одного без ответа."
   ],
-  "verdict": "В RAG большинство плохих ответов — проблемы поиска, а не модели. Сначала измеряйте retrieval, потом правьте промпт.",
+  "verdict": "Помогает ли реранкинг, зависит от эмбеддера. С офлайн-эмбеддером на совпадении слов cross-encoder поднял hit@1 на 12 перефразированных вопросах с 4/12 до 7/12. С настоящей моделью эмбеддингов обычный гибридный поиск дал 6/12, cross-encoder — 7/12, а простой лексический реранкер оказался не хуже (разница в пределах шума). Всего 30 вопросов на 3 коротких документах: это направление, а не бенчмарк.",
   "demo_title": "Спросите справочник",
   "demo_intro": "Крошечный справочник вымышленной компании. Спросите то, что в нём есть — и то, чего нет."
  },
  "stats": [
   [
    "30",
-   "golden questions in the retrieval eval (12 paraphrased)",
-   "эталонных вопросов в оценке поиска (12 перефразированных)"
+   "golden questions over 3 short documents (12 paraphrased)",
+   "эталонных вопросов на 3 коротких документах (12 перефразированных)"
   ],
   [
    "Hybrid search",
@@ -51,13 +51,29 @@
   ],
   [
    "PDF · DOCX · MD",
-   "formats ingested, with page numbers",
-   "форматы, с номерами страниц"
+   "formats ingested; page numbers for PDF",
+   "форматы; номера страниц — для PDF"
   ],
   [
-   "hit-rate · MRR",
-   "retrieval is evaluated, not guessed",
-   "поиск оценивается, а не угадывается"
+   "4/12 → 7/12",
+   "hit@1 on the 12 paraphrased questions, hybrid vs hybrid + cross-encoder (offline embedder). With a real embedder: 6/12 → 7/12",
+   "hit@1 на 12 перефразированных вопросах, гибрид vs гибрид + cross-encoder (офлайн-эмбеддер). С настоящим эмбеддером: 6/12 → 7/12"
+  ],
+  [
+   "0 of 30",
+   "golden questions are unanswerable, so “I don't know” is not measured",
+   "эталонных вопросов без ответа, поэтому «Я не знаю» не измерялось"
   ]
- ]
+ ],
+ "tags": [
+  "rag"
+ ],
+ "short": [
+  "golden questions over 3 short documents",
+  "эталонных вопросов на 3 коротких документах"
+ ],
+ "card": {
+  "en": "Chat with your documents and get cited answers, or an honest “I don't know”.",
+  "ru": "Чат с вашими документами: ответы с цитатами или честное «Я не знаю»."
+ }
 }

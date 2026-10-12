@@ -13,49 +13,61 @@
  "en": {
   "title": "Strip personal data before it reaches the LLM — and put it back",
   "tag": "An OpenAI-compatible gateway that swaps names, emails, card numbers and secrets for placeholders.",
-  "problem": "Every customer email you send to an LLM API also sends a name, a phone and a card number to a third party. The alternative many teams pick is “no AI”.",
+  "problem": "Support tickets, CRM notes and emails contain names, phone numbers and card numbers, and contracts, GDPR or the security team often say they must not be sent to a third-party LLM provider.",
   "how": [
    "Patterns with validators (Luhn, IBAN checksum) catch structured data precisely.",
    "A NER model (GLiNER, CPU) finds names and addresses that patterns cannot.",
    "The model sees only placeholders like [PERSON_1]; the real values are restored in its answer."
   ],
-  "verdict": "Only 6 of 330 gold values (1.8%) reached the provider. Patterns alone let 57% through — precise, but blind to names. Redacted answers were as good or better in 65% of blind comparisons, against a 70% noise floor for two samples of the same prompt.",
+  "verdict": "6 of 330 gold values (1.8%) still reached the provider under the support-chat policy: a lone first name, a lowercase name, a Russian and a US street address, and two secret formats the patterns do not know (both secrets come from the held-out split). Patterns alone let 57% through — precise, but they only catch structured data. On the 36 held-out documents detection F1 was 0.96 as well (97.1% of values redacted, against 98.2% overall). Redacted replies were as good or better in 65% of blind comparisons (13 of 20), against a 70% noise floor for two samples of the same prompt; with 20 documents that gap is not statistically meaningful, and a second judge rated the same answers 55%.",
   "demo_title": "Redact it yourself",
   "demo_intro": "Paste any text. Everything is detected in your browser. Turn the name detector off to see what patterns alone miss."
  },
  "ru": {
   "title": "Убираем персональные данные до LLM — и возвращаем в ответ",
   "tag": "OpenAI-совместимый шлюз, заменяющий имена, email, номера карт и секреты на плейсхолдеры.",
-  "problem": "Каждое письмо клиента, отправленное в API LLM, отправляет третьей стороне ещё и имя, телефон и номер карты. Многие команды выбирают альтернативу «без AI».",
+  "problem": "Тикеты поддержки, заметки CRM и письма содержат имена, телефоны и номера карт, а договоры, GDPR или служба безопасности часто запрещают отправлять такие данные стороннему провайдеру LLM.",
   "how": [
    "Паттерны с валидаторами (Luhn, контрольная сумма IBAN) точно ловят структурированные данные.",
    "NER-модель (GLiNER, на CPU) находит имена и адреса, которые паттерны не видят.",
    "Модель видит только плейсхолдеры вроде [PERSON_1]; настоящие значения возвращаются в её ответ."
   ],
-  "verdict": "До провайдера дошло лишь 6 из 330 эталонных значений (1,8%). Одни паттерны пропускали 57% — точные, но слепые к именам. Ответы по обезличенному тексту были не хуже в 65% слепых сравнений при «шумовом» уровне 70% для двух ответов на один и тот же промпт.",
+  "verdict": "До провайдера всё же дошло 6 из 330 эталонных значений (1,8%) при политике support-chat: одиночное имя без фамилии, имя со строчной буквы, русский и один американский адрес и два формата секретов, которых паттерны не знают (оба секрета — из отложенной выборки). Одни паттерны пропускали 57% — они точны, но ловят только структурированные данные. На отложенной выборке из 36 документов F1 обнаружения тоже 0,96 (обезличено 97,1% значений против 98,2% на всём наборе). Ответы по обезличенному тексту были не хуже в 65% слепых сравнений (13 из 20) при «шумовом» уровне 70% для двух ответов на один и тот же промпт; на 20 документах эта разница статистически не значима, а второй судья оценил те же ответы в 55%.",
   "demo_title": "Обезличьте сами",
   "demo_intro": "Вставьте любой текст. Всё определяется в вашем браузере. Выключите детектор имён, чтобы увидеть, что пропускают одни паттерны."
  },
  "stats": [
   [
    "1.8%",
-   "gold PII values reached the provider",
-   "эталонных значений дошло до провайдера"
+   "gold PII values reached the provider (support-chat policy, 6 of 330)",
+   "эталонных значений дошло до провайдера (политика support-chat, 6 из 330)"
   ],
   [
    "0.96",
-   "detection F1 (202 docs, 13 types, 5 languages)",
-   "F1 (202 док., 13 типов, 5 языков)"
+   "detection F1, partial match (202 docs, 13 types, 5 languages; 0.96 on the 36 held-out docs too)",
+   "F1 обнаружения, частичное совпадение (202 док., 13 типов, 5 языков; на 36 отложенных док. тоже 0,96)"
   ],
   [
    "67 ms",
-   "per document, CPU only",
-   "на документ, только CPU"
+   "mean per document, CPU only (p95 80 ms)",
+   "в среднем на документ, только CPU (p95 80 мс)"
   ],
   [
    "39/39",
-   "placeholders restored correctly",
-   "плейсхолдеров восстановлено верно"
+   "placeholders in real model answers restored correctly",
+   "плейсхолдеров в реальных ответах моделей восстановлено верно"
   ]
- ]
+ ],
+ "tags": [
+  "security",
+  "data"
+ ],
+ "short": [
+  "gold PII values reached the provider",
+  "эталонных значений дошло до провайдера"
+ ],
+ "card": {
+  "en": "A gateway that hides personal data from the LLM provider and restores it in the answer.",
+  "ru": "Шлюз, прячущий персональные данные от провайдера LLM и возвращающий их в ответ."
+ }
 }

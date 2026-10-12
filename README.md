@@ -7,14 +7,21 @@ Python · TypeScript · LangGraph · FastAPI · Next.js · PostgreSQL + pgvector
 
 **https://gelevanog.github.io/gelevanog/ru/**
 
-| Project | What it does | Measured |
+| Проект (демо) | Что делает | Репозиторий |
 |---|---|---|
-| [Bulwark](https://github.com/gelevanog/llm-guardrails-firewall) | LLM firewall against prompt injection and data exfiltration | attacks that worked: 2/9 → 0/9 |
-| [PII Shield](https://github.com/gelevanog/pii-redaction-gateway) | Strips personal data before it reaches an LLM, restores it in the answer | 1.8% of PII reached the provider, F1 0.96 |
-| [Distillery](https://github.com/gelevanog/llm-distillation-pipeline) | Distills a large LLM into a small model for one task | router: 73.8% vs 75.0% for the teacher |
-| [Support Autopilot](https://github.com/gelevanog/support-agent-langgraph) | AI agent that resolves support tickets and asks a human before risky actions | LangGraph, human approval |
-| [DocuChat](https://github.com/gelevanog/docuchat-rag) | RAG chat with cited answers; says "I don't know" | hybrid search, hit-rate / MRR evaluation |
-| [CRM Copilot](https://github.com/gelevanog/crm-copilot-nextjs) | LLM features inside an existing multi-tenant SaaS | typed, workspace-scoped tools |
+| [Bulwark](https://gelevanog.github.io/gelevanog/ru/p/bulwark/) | Файрвол для LLM-приложений против prompt injection и утечек данных. | [код](https://github.com/gelevanog/llm-guardrails-firewall) |
+| [PII Shield](https://gelevanog.github.io/gelevanog/ru/p/pii-shield/) | Шлюз, прячущий персональные данные от провайдера LLM и возвращающий их в ответ. | [код](https://github.com/gelevanog/pii-redaction-gateway) |
+| [Clearance](https://gelevanog.github.io/gelevanog/ru/p/permission-aware-rag/) | RAG по документам компании: ответы только из файлов, доступных пользователю. | [код](https://github.com/gelevanog/permission-aware-rag) |
+| [Tally](https://gelevanog.github.io/gelevanog/ru/p/text-to-sql-agent/) | Вопрос базе обычным языком: проверенный read-only SQL, график и ответ. | [код](https://github.com/gelevanog/text-to-sql-agent) |
+| [Scout](https://gelevanog.github.io/gelevanog/ru/p/ai-sdr-agent/) | AI-менеджер по продажам: источник под каждым фактом, отправка только после вашего одобрения. | [код](https://github.com/gelevanog/ai-sdr-agent) |
+| [Switchboard](https://gelevanog.github.io/gelevanog/ru/p/mcp-company-connectors/) | Защищённые MCP-серверы между AI-ассистентами и вашими CRM, helpdesk и базами. | [код](https://github.com/gelevanog/mcp-company-connectors) |
+| [Callie](https://gelevanog.github.io/gelevanog/ru/p/ai-voice-receptionist/) | Голосовой агент: отвечает на звонки, записывает на приём и передаёт звонок человеку. | [код](https://github.com/gelevanog/ai-voice-receptionist) |
+| [Sift](https://gelevanog.github.io/gelevanog/ru/p/ai-web-scraper/) | Опишите нужные данные обычным языком — получите чистый структурированный JSON с сайта. | [код](https://github.com/gelevanog/ai-web-scraper) |
+| [Support Autopilot](https://gelevanog.github.io/gelevanog/ru/p/support-autopilot/) | AI-агент решает рутинные обращения в поддержку и спрашивает человека перед рискованным. | [код](https://github.com/gelevanog/support-agent-langgraph) |
+| [DocuChat](https://gelevanog.github.io/gelevanog/ru/p/docuchat/) | Чат с вашими документами: ответы с цитатами или честное «Я не знаю». | [код](https://github.com/gelevanog/docuchat-rag) |
+| [Distillery](https://gelevanog.github.io/gelevanog/ru/p/distillery/) | Дистилляция большой LLM в небольшую дешёвую модель под одну задачу — с замером. | [код](https://github.com/gelevanog/llm-distillation-pipeline) |
+| [CRM Copilot](https://gelevanog.github.io/gelevanog/ru/p/crm-copilot/) | LLM-функции в существующем multi-tenant SaaS с теми же правами, что у пользователя. | [код](https://github.com/gelevanog/crm-copilot-nextjs) |
+| [DocExtract](https://gelevanog.github.io/gelevanog/ru/p/docextract/) | Счета и письма → проверенные записи: LLM читает, код проверяет, человек смотрит сомнительное. | [код](https://github.com/gelevanog/invoice-extraction-django) |
 
 Open to remote full-time roles and freelance projects.
 [LinkedIn](https://www.linkedin.com/in/ivan-savchenko-04084487/) · [Upwork](https://www.upwork.com/freelancers/ivans152) · gelevanog@gmail.com

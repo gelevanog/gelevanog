@@ -1,6 +1,6 @@
 {
  "id": "crm-copilot",
- "order": 6,
+ "order": 12,
  "name": "CRM Copilot",
  "repo": "https://github.com/gelevanog/crm-copilot-nextjs",
  "stack": [
@@ -16,11 +16,11 @@
   "tag": "LLM features added to an existing multi-tenant SaaS app, done safely.",
   "problem": "Most companies asking for “AI in our product” already have a product: a database, accounts and permissions. A chatbot pasted on top can know things it should not.",
   "how": [
-   "The copilot calls only a few typed functions, each scoped to the signed-in workspace in code. It never writes SQL.",
-   "It never writes on its own: it proposes a change, the user sees a before/after diff and approves it.",
-   "Every AI output is validated against a schema (Zod); rate limits and cost per request are logged."
+   "The copilot calls only seven typed tools (four read, three propose-only write), each scoped in code to the signed-in user's workspace. It never writes SQL.",
+   "It never writes on its own: it proposes a change, the user sees a before/after diff and approves it. On approval the server re-checks ownership, expiry (15 minutes by default) and that the record has not changed since.",
+   "Tool inputs and structured outputs (emails, summaries, filters) are validated against a Zod schema. Per-workspace rate limits are enforced; tokens, estimated cost and latency are logged for every request."
   ],
-  "verdict": "The AI gets the same permissions as the user — not more. A bad answer becomes a clean error, not a broken page.",
+  "verdict": "The AI gets the signed-in user's workspace and identity scope — not more (the demo has no roles yet). A malformed answer becomes a clean error, not a broken page; a well-formed but wrong one does not: a free model (Nemotron) returned a schema-valid but incomplete filter in both runs. Model comparison of 2026-10-12, one run per model (20 chat cases, 14 filter requests, 5 emails, 5 summaries): chat Haiku 18/20 (20/20 on a re-run after one rule was loosened), Opus 20/20, Qwen 19/20; filters Haiku 14/14, Opus 12/14 (both misses came from the gateway's strict JSON-schema mode, checked with one probe call each), Qwen 13/14. Emails are the weak spot: judged faithful 1 of 5 for Haiku, 4 of 5 for Opus, 3 of 5 for Qwen, with Opus judging all of them including its own output. Samples are small: a direction, not a measurement.",
   "demo_title": "Talk to the copilot",
   "demo_intro": "Try the presets or type your own command. Notice what it refuses to do."
  },
@@ -29,11 +29,11 @@
   "tag": "LLM-функции в существующем multi-tenant SaaS-приложении — безопасно.",
   "problem": "У большинства компаний, которые просят «AI в продукт», продукт уже есть: база, аккаунты и права. Чат-бот, прикрученный сверху, может знать то, чего не должен.",
   "how": [
-   "Копилот вызывает лишь несколько типизированных функций, каждая ограничена рабочим пространством пользователя в коде. SQL он не пишет.",
-   "Сам он ничего не записывает: предлагает изменение, пользователь видит diff «до/после» и подтверждает.",
-   "Каждый ответ AI проверяется по схеме (Zod); лимиты и стоимость каждого запроса логируются."
+   "Копилот вызывает лишь семь типизированных инструментов (четыре на чтение, три только «предлагают» изменение), каждый ограничен в коде рабочим пространством вошедшего пользователя. SQL он не пишет.",
+   "Сам он ничего не записывает: предлагает изменение, пользователь видит diff «до/после» и подтверждает. При подтверждении сервер заново проверяет владельца, срок действия (по умолчанию 15 минут) и то, что запись с тех пор не менялась.",
+   "Входы инструментов и структурированные ответы (письма, сводки, фильтры) проверяются по схеме Zod. Лимиты запросов действуют на каждое рабочее пространство; токены, оценка стоимости и задержка логируются для каждого запроса."
   ],
-  "verdict": "AI получает те же права, что и пользователь, — не больше. Плохой ответ превращается в аккуратную ошибку, а не в сломанную страницу.",
+  "verdict": "AI получает рабочее пространство и личность вошедшего пользователя — не больше (ролей в демо пока нет). Некорректный ответ превращается в аккуратную ошибку, а не в сломанную страницу; корректный по схеме, но неверный по смыслу — нет: бесплатная модель Nemotron в обоих прогонах вернула валидный по схеме, но неполный фильтр. Сравнение моделей от 2026-10-12, по одному прогону на модель (20 чат-кейсов, 14 запросов фильтра, по 5 писем и сводок): чат — Haiku 18/20 (20/20 при повторе после смягчения одного правила), Opus 20/20, Qwen 19/20; фильтры — Haiku 14/14, Opus 12/14 (оба промаха из-за строгого JSON-schema режима шлюза, проверено одним пробным вызовом на запрос), Qwen 13/14. Слабое место — письма: без выдумок признаны 1 из 5 у Haiku, 4 из 5 у Opus, 3 из 5 у Qwen, причём судил все ответы Opus, включая собственные. Выборки малы: это направление, а не измерение.",
   "demo_title": "Поговорите с копилотом",
   "demo_intro": "Попробуйте пресеты или введите свою команду. Обратите внимание, от чего он отказывается."
  },
@@ -44,14 +44,26 @@
    "SQL, написанного моделью"
   ],
   [
-   "104",
-   "tests in 12 files",
-   "теста в 12 файлах"
+   "115",
+   "tests in 13 files",
+   "тестов в 13 файлах"
   ],
   [
    "Zod",
-   "every AI output is schema-validated",
-   "каждый ответ AI проверяется по схеме"
+   "tool inputs and structured outputs are schema-validated",
+   "входы инструментов и структурированные ответы проверяются по схеме"
+  ],
+  [
+   "0/2",
+   "runs where the free Nemotron NL filter was right (schema-valid, but incomplete)",
+   "прогона, где NL-фильтр на бесплатной Nemotron оказался верным (валиден по схеме, но неполон)"
   ]
- ]
+ ],
+ "tags": [
+  "agents"
+ ],
+ "card": {
+  "en": "LLM features inside an existing multi-tenant SaaS, with the same permissions as the user.",
+  "ru": "LLM-функции в существующем multi-tenant SaaS с теми же правами, что у пользователя."
+ }
 }
