@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const dist = path.join(root, 'dist');
 const site = JSON.parse(fs.readFileSync(path.join(root, 'data/site.json'), 'utf8'));
+const LANGS = site.languages || ['en']; // the Russian strings stay in data/ but are not published; add 'ru' here to build /ru/ again
 const SITE_URL = (process.env.SITE_URL || site.url).replace(/\/$/, '');
 const projects = fs.readdirSync(path.join(root, 'data/projects'))
   .filter(f => f.endsWith('.json'))
@@ -24,7 +25,6 @@ const art = (p, r) => `${r}assets/art/${p.id}.webp`;
 function layout({ lang, sub, title, desc, og, body, demo }) {
   const t = site[lang];
   const here = pagePath(lang, sub);
-  const other = pagePath(lang === 'en' ? 'ru' : 'en', sub);
   const r = up(here);
   const url = `${SITE_URL}/${here}`;
   return `<!doctype html>
@@ -36,8 +36,7 @@ function layout({ lang, sub, title, desc, og, body, demo }) {
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${url}">
-<link rel="alternate" hreflang="en" href="${SITE_URL}/${pagePath('en', sub)}">
-<link rel="alternate" hreflang="ru" href="${SITE_URL}/${pagePath('ru', sub)}">
+${LANGS.map(l => `<link rel="alternate" hreflang="${l}" href="${SITE_URL}/${pagePath(l, sub)}">`).join('\n')}
 <meta property="og:type" content="website">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
@@ -157,15 +156,16 @@ fs.rmSync(dist, { recursive: true, force: true });
 const write = (rel, data) => { const f = path.join(dist, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, data); };
 const copyDir = (from, to) => fs.cpSync(path.join(root, from), path.join(dist, to), { recursive: true });
 
-for (const lang of ['en', 'ru']) {
+for (const lang of LANGS) {
   write(pagePath(lang, '') + 'index.html', homePage(lang));
   projects.forEach((p, i) => write(pagePath(lang, `p/${p.id}/`) + 'index.html', projectPage(lang, p, i)));
 }
 copyDir('src', 'assets');
 copyDir('assets/og', 'assets/og');
+if (!LANGS.includes('ru')) fs.rmSync(path.join(dist, 'assets/og/ru'), { recursive: true, force: true });
 copyDir('assets/art', 'assets/art');
 fs.copyFileSync(path.join(root, 'assets/favicon.svg'), path.join(dist, 'assets/favicon.svg'));
-const urls = ['', ...projects.map(p => `p/${p.id}/`)].flatMap(s => ['en', 'ru'].map(l => `${SITE_URL}/${pagePath(l, s)}`));
+const urls = ['', ...projects.map(p => `p/${p.id}/`)].flatMap(s => LANGS.map(l => `${SITE_URL}/${pagePath(l, s)}`));
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `<url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`);
 write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 write('.nojekyll', '');
