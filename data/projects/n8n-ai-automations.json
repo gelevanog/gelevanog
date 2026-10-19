@@ -1,0 +1,55 @@
+{
+ "id": "n8n-ai-automations",
+ "order": 11,
+ "name": "Relay",
+ "repo": "https://github.com/gelevanog/n8n-ai-automations",
+ "stack": [
+  "n8n",
+  "FastAPI",
+  "PostgreSQL",
+  "MCP"
+ ],
+ "og": "assets/og/n8n-ai-automations.png",
+ "demo": "n8n-ai-automations",
+ "tags": [
+  "agents",
+  "ops"
+ ],
+ "en": {
+  "title": "The model reads the invoice. The code decides whether it gets posted.",
+  "tag": "Five n8n workflows for a small business (inbox, invoices, leads, FAQ, KPI digest) in which every AI step goes through code checks and anything unsure waits for a person.",
+  "problem": "Automation tools handle the routine half of inbox, invoice and lead work well, but “just add an AI step” goes wrong on the judgment half: the model files a phishing “overdue invoice” under accounts payable, books a bill whose VAT does not add up, invents an order number or promises a discount nobody approved. And when a step fails at 3 a.m. the email is simply gone; both are the project’s motivation, not measured rates.",
+  "how": [
+   "The model proposes, code decides: every AI step goes through a small FastAPI gateway that validates the output against a schema (one corrective retry), drops values the email or PDF does not contain, recomputes invoice arithmetic and VAT, matches vendors against master data and computes lead scores from rules. Workflows branch on a decision field, never on free text.",
+   "People stay in the loop: anything unsure, unusual or irreversible parks the n8n execution at a Wait node and lands in a review queue. Approving or rejecting in the dashboard (or through an MCP server, tested with the SDK client but not driven from Claude Desktop) resumes it where it stopped, and every first reply to a lead is approved by a person before it is sent.",
+   "Nothing is lost, nothing happens twice: every workflow starts with an idempotency check, every write carries an idempotency key, every HTTP step is tried up to 3 times 2 s apart, and a run that still fails lands in a dead-letter queue with an alert and a one-click replay. In the failure test, 7 replayed dead letters left 12 of 12 bills present, none twice."
+  ],
+  "verdict": "On synthetic data, with one free model (nemotron-3-super via OpenRouter, $0 in total; its nemotron-3-ultra fallback answered 6 of 303 gateway requests), the split of labour held: the model read fields, categories and company facts well, the code stopped all 13 invoices with a planted problem (one of two re-sent copies for its original’s VAT error, not as a duplicate), and the one email written to manipulate the classifier went to review. All 12 support questions that need a person were escalated, but not all by code: 8 by escalation rules before any model call, 4 by the model saying the articles do not cover them (a rules-only baseline escalated 11 of 12). The gate is tuned to escalate (25 of 28 answerable questions answered automatically as run); the README says an over-escalation costs a person a minute. Right decisions: 92.5% as run (rules baseline 85.0%), 95.0% after the author fixed a false positive in their own number check (re-run from cache). What flatters these numbers: the data is synthetic and was written by an AI agent (Claude) in the same session as the prompts and checks, so the planted problems are ones it thought of. The 40 text-layer PDF invoices use four tidy templates, and a rules-only baseline scored the same 320/320, which the author calls the point to take away, not a strength of either. The model earns its place on 12 harder invoices in new layouts, written after the main run (95/96 fields against 12.5% for the baseline), but the checks they needed (per-rate VAT, document type, changed bank details) were written after it too, so 6 of 6 problem ones stopped says little about cases nobody wrote a check for. The credit note was held for the right reason plus a spurious second one (the grounding check compared its negative total with the unsigned figure in the text). It is evidence the mechanism generalizes, not an accuracy figure. Confidence is not calibrated: all 80 triage classifications came back at 0.90 to 0.99, so the 0.75 gate never fired and the nine reviews came from deterministic reasons; the single automatic mistake in 190 items (a supplier newsletter archived as spam) was “0.95 sure”. Limits: for lead replies the checks cover form, not judgement (greeting, no placeholders, no unknown numbers), so a person approves every first reply. Free models are slow and rate-limited (triage p50 13.1 s; the daily cap stopped the author’s evaluation). There is no OCR, so a scanned invoice goes to review with nothing extracted; the CRM, helpdesk, accounting and chat systems are mocks; the weekly digest is one run that shows the mechanism, not a measurement. Expect lower numbers on a real inbox and plan a week of shadow mode, with everything going to review.",
+  "demo_title": "Try to get a bad invoice posted",
+  "demo_intro": "A fictional supplier invoice for the fictional Kestrel Print Co., already read into fields. Break a number, change the vendor or add a footer that talks to AI, and see which checks hold it for a person. Then post it, send it twice and take the accounting system down."
+ },
+ "stats": [
+  [
+   "13 of 13",
+   "planted invoice problems stopped, and 27 of 27 clean invoices posted with no person, 0 bills twice (40 synthetic PDFs). A rules-only baseline scored the same on this set"
+  ],
+  [
+   "95/96",
+   "fields read right on 12 harder invoices the author wrote after the main run, in layouts the main set does not use (rules baseline: 12.5%). 6 of 6 problem ones stopped, but the checks they needed were written for them, so that says little about unseen cases"
+  ],
+  [
+   "0 unsafe",
+   "support auto-replies: 12 of 12 questions that must reach a person were escalated (8 by escalation rules before any model call, 4 by the model saying the articles do not cover them; rules baseline 11 of 12). 25 of 28 answerable questions auto-answered as run. Right decisions: 92.5% as run, 95.0% after fixing a checker false positive (40 questions)"
+  ],
+  [
+   "0.90–0.99",
+   "the model’s self-reported confidence on all 80 emails, so the 0.75 triage gate never fired: it is not calibrated, and the gate works through deterministic reasons instead"
+  ]
+ ],
+ "short": [
+  "planted invoice problems stopped; a rules-only baseline matched this"
+ ],
+ "card": {
+  "en": "Business automations where the AI proposes, code decides and doubts wait for a person."
+ }
+}

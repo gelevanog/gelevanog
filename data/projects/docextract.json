@@ -1,6 +1,6 @@
 {
  "id": "docextract",
- "order": 13,
+ "order": 17,
  "name": "DocExtract",
  "repo": "https://github.com/gelevanog/invoice-extraction-django",
  "stack": [

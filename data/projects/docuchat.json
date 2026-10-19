@@ -1,6 +1,6 @@
 {
  "id": "docuchat",
- "order": 10,
+ "order": 14,
  "name": "DocuChat",
  "repo": "https://github.com/gelevanog/docuchat-rag",
  "stack": [

@@ -1,0 +1,55 @@
+{
+ "id": "ai-medical-scribe",
+ "order": 9,
+ "name": "Notewell",
+ "repo": "https://github.com/gelevanog/ai-medical-scribe",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "faster-whisper",
+  "FHIR R4"
+ ],
+ "og": "assets/og/ai-medical-scribe.png",
+ "demo": "ai-medical-scribe",
+ "tags": [
+  "security",
+  "voice"
+ ],
+ "en": {
+  "title": "An AI scribe that flags what it cannot back up. Synthetic data, demo only, not for clinical use",
+  "tag": "Notewell drafts a SOAP note, asks the model for a quote behind every statement and flags the ones it cannot verify, masks identifiers before any cloud model sees the text and waits for a clinician to sign, but it is not a medical device: demo only, all data synthetic, not for clinical use.",
+  "problem": "A fluent note can still be wrong: a symptom the patient denied becomes “reports chest pain”, the father’s heart attack becomes the patient’s, and “10 milligrams, no wait, 20” becomes 10. And a visit recording is full of protected health information, so the less identifiable data a cloud model sees, the better.",
+  "how": [
+   "Speech and masking stay local. faster-whisper transcribes on the clinic’s CPU, then identifiers are replaced with stable placeholders (such as [PATIENT] and [DOB]) before any cloud model sees the text. Every outgoing request is scanned again for the registered identifiers, and if anything remains the request is not sent.",
+   "The model drafts, plain code checks. The model returns SOAP statements with turn numbers and verbatim quotes; deterministic guards then check grounding, negation and attribution, and doses and units against a small drug list. ICD-10-CM codes must exist and be billable, and the E/M level is compared with a rule-based estimate.",
+   "A clinician signs. The review screen highlights the evidence for each statement in the transcript, and sign-off needs every section accepted, every error resolved or acknowledged and an attestation. Only a signed note exports, as a FHIR R4 bundle and a PDF."
+  ],
+  "verdict": "Not a medical device: demo only, not for clinical use, and no claim of HIPAA compliance. Everything is synthetic. The 32 visits (878 gold SOAP facts) were written and annotated by AI agents (Claude) against a brief, and the audio was generated with a text-to-speech model, so the benchmark is not independent, the speech is cleaner than real speech and nobody interrupts: read the numbers as a regression benchmark for this system, not as clinical accuracy. Everything ran on free models only ($0). What held: no gold or planted identifier reached the model in any of 64 + 65 + 66 payloads, but that 0 is an in-sample result after a fix. The detector was tuned on these same 32 visits (it covers 99.6% of their 251 identifiers), and the first run on speech-recognition transcripts (an offline baseline) leaked two lowercase organization names (2 identifiers in 64 payloads) that the detector missed; it was fixed and every leak check repeated. The test counts only identifiers known in advance (the gold annotations and planted canaries). In the speech-recognition run with the free model, the egress check also masked one misspelled registered name before sending. Every suggested code that reached the clinician exists and is billable (one invalid code was suggested and stopped by the guard), and nothing is signed without a human. What did not: PHI detection on unseen phrasing found 79% of identifiers (134 of 169; the first version scored 68% on an earlier held-out set), so the hard guarantee is the egress check on registered identifiers, not the detector. The negation guard caught only 53.1% of flipped “Denies X” lines because it knows only the findings in its lexicon; the one real negation error in the independent audit (a patient whose room “swims” recorded as denying dizziness) was caught only after the lexicon was taught lay words for dizziness, so that catch is not independent. The free model picked the right primary ICD-10-CM code 69% of the time and the exact E/M level 56% (within one level: 97%). The speaker-role diarizer drops from 98.1% to 78.8% when both voices are the same sex, and from speech-recognition transcripts the share of correct doses fell from 70.3% to 59.5%. The independent reviewer, another AI agent (Claude) and not a clinician, found 1 contradicted line in 275 lines from 8 of the 32 visits; the guards did not flag the 9 minor inaccuracies, and 4 correct lines got a false “partly supported” warning. Real recordings and clinician review are still on the roadmap.",
+  "demo_title": "Corrupt a note and see who catches it",
+  "demo_intro": "An invented visit, a hand-written draft note and three of Notewell’s guards, much simplified. Corrupt a line or type your own edit and watch which guard flags it; one corruption slips through on purpose. Not a medical device: demo only, not for clinical use."
+ },
+ "stats": [
+  [
+   "0 leaks",
+   "known identifiers (gold annotations and planted canaries) in the payloads sent to the model: 64 + 65 + 66 payloads, 3 runs on 32 synthetic visits with free models. This is the result after a detector fix (the first speech-recognition run, an offline baseline, leaked 2 identifiers), and the detector was tuned on these same visits, so it is an in-sample result"
+  ],
+  [
+   "79%",
+   "identifiers found by the PHI detector on 120 held-out synthetic utterances (AI-written) after it was frozen (134 of 169; the first version scored 68% on an earlier held-out set)"
+  ],
+  [
+   "92.6%",
+   "recall of gold SOAP facts in the note with the right polarity (89.6% in the right section), of 878 facts from reference transcripts of synthetic visits; rule-based baseline: 64.2%. Counted by a keyword-based scorer that is lenient about wording; 91.1% of 941 note statements matched a gold fact (a lower bound on precision)"
+  ],
+  [
+   "53.1%",
+   "flipped “Denies X” → “Reports X” lines the guards caught, in 32 scripted corruptions of notes drafted from synthetic visits (46.9% before two concepts seen in the misses were added)"
+  ]
+ ],
+ "short": [
+  "known identifiers in model payloads, after a detector fix (detector on unseen text: 79%)"
+ ],
+ "card": {
+  "en": "A demo AI scribe that cites a quote for each note line and flags what it cannot verify (synthetic data, not for clinical use)."
+ }
+}

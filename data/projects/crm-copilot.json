@@ -1,6 +1,6 @@
 {
  "id": "crm-copilot",
- "order": 12,
+ "order": 16,
  "name": "CRM Copilot",
  "repo": "https://github.com/gelevanog/crm-copilot-nextjs",
  "stack": [

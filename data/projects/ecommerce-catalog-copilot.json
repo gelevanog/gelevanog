@@ -1,0 +1,55 @@
+{
+ "id": "ecommerce-catalog-copilot",
+ "order": 10,
+ "name": "Shelfwise",
+ "repo": "https://github.com/gelevanog/ecommerce-catalog-copilot",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "Next.js",
+  "Shopify CSV"
+ ],
+ "og": "assets/og/ecommerce-catalog-copilot.png",
+ "demo": "ecommerce-catalog-copilot",
+ "tags": [
+  "data",
+  "ops"
+ ],
+ "en": {
+  "title": "A catalog copilot where the photo double-checks the supplier and code checks the claims it knows",
+  "tag": "Shelfwise turns messy supplier spreadsheets and product photos into store listings in your voice, ties every stated spec, number and claim phrase it knows to a spreadsheet cell or the photo, and exports only what a person approved.",
+  "problem": "Supplier spreadsheets arrive with title rows above the header, columns like “Mat.” and “Wt”, prices like “€24,90”, duplicate products and notes like “Relieves back pain”, and one invented “dishwasher safe” in a listing becomes a returns problem. A chatbot can repeat a supplier’s medical claim or guess a missing material, and nothing ties its sentences to a source (no plain-chatbot baseline was measured here).",
+  "how": [
+   "Code imports the feed: columns are mapped by name or by their values, prices and units are normalized, size rows become variants, duplicates are merged and broken variants block the product. Every fact keeps the file, row and column it came from, and supplier claims such as “Relieves back pain” are not facts.",
+   "A vision model reads each photo without ever seeing the feed, so agreement is evidence. For color, pattern and pack size a conflict suggests the photo’s value (when the model was confident) and the product waits for a person; material is a spec, so the feed wins and a material seen only in the photo never enters the copy.",
+   "A copy model writes the listing from a numbered facts list, and code checks every number with a unit, pack size, material, color and pattern, and each claim phrase on its list, against a feed fact or the photo, plus the store’s length and wording rules. A failing draft gets one corrective round, translations get structural checks in code (language, numbers, brand names, glossary terms, length), and only listings a person approved are exported."
+  ],
+  "verdict": "Measured on 2026-10-13 with free OpenRouter models only, on 64 fictional products from two fictional suppliers (107 rows) and synthetic renders with known labels. The benchmark is not independent: an AI agent (Claude) wrote the generator, the renders, the feeds, the planted errors and the labels in the same session as the code, and fixed bugs the first run exposed before the final numbers, so the conflict numbers are optimistic for this test set. As run, 9 of the 11 planted errors were caught (pink vs burgundy and light blue vs teal agreed as one color family) and there were 2 false alarms; after two fixes made on this same set, all 11 were caught with no false alarms. The same first run had the checker read “Flower Pot” as a floral pattern, and the corrective round then made the model rename two products. The renders are cleaner than real photos, so read 100% pack-size accuracy (one free vision model; the second one got 87.5%) as “the mechanism works”. Both free vision models could not tell materials apart on these renders (23.4% for the better of the two, 12.5% for the other) and agreed with the agent-written style rule only 32.8% and 29.7% of the time (style is subjective, so it is used for tags only), which is why a material seen only in the photo is never written into a listing. A stronger model was not tested. The claims checker finds only the claims it knows: a different free model used as a judge found 15 unsupported claims on 9 of 20 listings that the first checker passed. Rules for most of these kinds of claim were added afterwards, but “lightweight”, “holds a laptop” and “helps prevent overwatering” are still unchecked. The judge also listed 5 pieces of care advice the feed does not give (only partly caught now: heat-resistant, food-safe) and 38 benefit phrases such as “ideal for picnics”, which nothing checks. The judge flagged something on 19 of 20 listings, but 14 of its 72 findings were its own error (the store name). A second judge pass over the final listings did not run because the free tier hit its daily limit. One listing is still flagged after the corrective round and cannot be approved until a person fixes it. Translations are only checked for language, numbers, brand names, glossary terms and length, plus a back-translation sample of 10 listings per language; a native speaker should read the first batch. The Shopify and WooCommerce stores are local mocks, and real supplier feeds, real photos, catalogs over a few hundred products and paid models were not measured.",
+  "demo_title": "Catch the supplier’s mistake",
+  "demo_intro": "An invented product and supplier row, and a drawn photo whose attributes stand in for a blind model’s reading. Edit the row, then write a listing sentence and see which claims trace to a fact. Switch to the first run’s rules to see some of the gaps that run and its judge check exposed."
+ },
+ "stats": [
+  [
+   "11 of 11",
+   "planted errors (wrong colors and pack sizes) raised as conflicts, after two checker fixes made on this same set, with 0 false alarms on 48 correct feed values; as first run: 9 of 11 and 2 false alarms. A small synthetic set, labeled by the same AI agent that wrote the code"
+  ],
+  [
+   "9 → 1",
+   "of 64 listings with an unsupported claim of a kind the checker knows: first drafts → after one corrective round. The checker’s rules were extended after a judge model read 20 of these listings (as first run: 6 first drafts flagged); the final listings were not re-judged"
+  ],
+  [
+   "100% vs 23.4%",
+   "pack size vs material read right from the photo by one free vision model, on 64 synthetic renders (the second free model: 87.5% / 12.5%); main color 75.0% exact, 92.2% within the color family"
+  ],
+  [
+   "147 / hour",
+   "products per hour in one 26-minute run of 64 products on free-tier endpoints (their latency is the limit), 3 workers, 3.0 model calls each; $0 with free models; from the first run, not re-measured"
+  ]
+ ],
+ "short": [
+  "planted errors flagged after fixes, synthetic set (first run 9/11)"
+ ],
+ "card": {
+  "en": "A catalog copilot that checks a supplier’s colors, patterns and pack sizes against the photo, and the listing’s specs against the feed, before a person approves."
+ }
+}

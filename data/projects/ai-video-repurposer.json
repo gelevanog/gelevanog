@@ -1,0 +1,55 @@
+{
+ "id": "ai-video-repurposer",
+ "order": 12,
+ "name": "Recut",
+ "repo": "https://github.com/gelevanog/ai-video-repurposer",
+ "stack": [
+  "Python",
+  "FastAPI",
+  "faster-whisper",
+  "ffmpeg"
+ ],
+ "og": "assets/og/ai-video-repurposer.png",
+ "demo": "ai-video-repurposer",
+ "tags": [
+  "voice",
+  "ops"
+ ],
+ "en": {
+  "title": "Long video to vertical clips: 0 of 96 cuts inside a word by Whisper’s own times, but two ways of grading the picks disagree",
+  "tag": "Recut finds the moments in a long video or podcast that work on their own, cuts them into 9:16 clips in the silences between words with face-tracked framing and word-by-word captions, and drafts chapters and posts for your approval.",
+  "problem": "Creators, podcasters, coaches and agencies sit on hours of long-form video, and turning one episode into five to ten vertical clips with captions, chapters, show notes, a blog post and a post per platform takes about a day of editing by hand. Recut does that first pass on your own machine and hands you a review screen; nothing is published, and nothing can be downloaded or exported, until a person has approved it.",
+  "how": [
+   "Speech recognition runs locally (faster-whisper small, on CPU) with word timestamps, and only the transcript text goes to a free language model. The model reads numbered sentences and answers with sentence ranges, a title, the hook, why the clip works and scores, never with timestamps. Code fits each pick to 20-60 s by whole sentences, cuts in the quietest 30 ms of the silence before the first word and after the last, and checks every cut against the word times and the audio level.",
+   "Plain code lints and grounds what the model writes. A standalone lint flags clips that open with “And”, “He” or “That”, say “as I said”, open with a greeting or end on a question or without a full stop, and ranks them lower, because a model asked whether its own pick stands alone says yes almost every time. Chapters follow YouTube’s rules, every post is counted the way its platform counts, the model picks quotes for the show notes as sentence numbers and code inserts them from the transcript, and every number and quotation in a generated text is checked against the transcript.",
+   "One ffmpeg pass renders each clip in 9:16 with face tracking (a slow virtual camera, or the full frame over a blurred fill when there are no faces), word-by-word animated captions and loudness normalized to -14 LUFS. A review screen previews the framing and captions in the browser first. The API refuses to download an unapproved clip or export without a recorded licence, and the MCP server for Claude Code and Claude Desktop has no approve tool at all."
+  ],
+  "verdict": "The parts done in code behaved as designed. None of the 96 model-picked cut points fell inside a word by Whisper’s own word times, which the snapper also starts from (0 of 102 for the keyword-rule baseline too, so that zero does not tell the model from the rules). The second check transcribed the 48 rendered clips again and found the first and last word intact in 47 of 48; the two misses are recognition differences (a name heard differently, a hallucinated “bye” after a silent ending), not clipped words. The cuts were not all ideal: 3 were within 30 ms of a word, 7 were on audio louder than -12 dB relative to speech, and lint warnings hit 23% of clips. The free model is good at picking moments, with 20 of 22 clips on the synthetic talks landing on a planted highlight against 12 of 22 for the rules, but read that with care: it is one run on 22 clips, the planted highlights were written to stand alone (the other turns refer back to earlier ones), so they are easy targets, the scripts were drafted by the same model family that picks the clips, and real NASA speech has no highlight gold. Recall is only 20 of 43, because it was asked for 2-3 clips per 7-minute talk and every talk has 5 planted highlights. Whether the clips stand on their own depends on who judges. The blind LLM judge said 47 of 48 do (and 31 of 51 rule-picked clips, 61%), but it is lenient and noisy: it also said 60% of random windows do and gave different verdicts on the same random windows in different batches (53% vs 35% on 3 videos), and every verdict came from a fallback model, dots-3-note-preview, not the gemma model that was requested. A 20-clip sample (10 synthetic, 10 NASA, drawn on the first day from the 9 videos done by then, so the 4 talks processed on day two are not in it) scored with a rubric by Claude, the AI that built Recut and not an independent human, gave 16 of 20 fully standalone and 15 of 20 passing the whole rubric; the 4 that failed open with “that signal”, “the gentler approach”, “The Welcome series” or a garbled sentence. The NASA clips are standalone (9 of 10) but weaker as social hooks (1.1 on a 0-2 scale). Chapters are weaker than they look: 15 of 20 predicted boundaries were within ±15 s (mean error 1.9 s), but 4 of 20 were more than 30 s from any real topic change, and a plain lexical baseline did as well at ±30 s. Face tracking kept the face inside the 9:16 window in 96.8% of sampled frames against 88.9% for a centre crop (25 NASA clips); a centre crop is already fairly good for people at a press-conference table, and 23 slide or B-roll clips fell back to the full frame over a blurred fill. Speech recognition made 1.6% word errors on synthetic voices and missed or got wrong 7.2% of NASA’s caption words on real speech (the raw 20.0% is inflated because NASA’s live captions skip whole passages), and speakers were only scored on the easy case of two clearly different synthetic voices (98.6% of words); expect worse on similar voices and overlapping speech. The run also exposed errors upstream of the model: the test voice read “$10” as “a dollar ten” and Whisper heard “$15 ... $400” as “$1.15 ... $1.400”, so the model wrote “$1.10” and “$1,400” in 12 posts, and the grounding check flagged all 12. It also flagged 4 long-form passages, 3 of them NASA show-note quotes stitched together from separate sentences with ellipses, so not verbatim. The free reasoning model sometimes spends its whole budget thinking and returns nothing, which cost 2 videos their posts and 1 its clips until retries were added, and the free tier’s daily request limit stopped the run after 9 of 13 videos. The test set is 13 videos (2 h 40 min): 9 synthetic ones and 4 public-domain NASA briefings, all processed with free models for $0.",
+  "demo_title": "Pick a clip by sentence number and see where the cut lands",
+  "demo_intro": "A made-up podcast excerpt with numbered sentences, invented word times and invented audio levels. You play the model: choose the sentences, or paste your own transcript, and watch code fit the clip to 20-60 s, cut in the quietest 30 ms of the pause, check every cut and lint the opening and ending. A second box cuts the same sentences by whole-second timestamps, which is what Recut avoids. There is no audio, video or model in this demo."
+ },
+ "stats": [
+  [
+   "0 of 96",
+   "model-picked cut points inside a word by Whisper’s word times (keyword-rule baseline: also 0 of 102); re-transcribing the rendered clips found the first and last word intact in 47 of 48; 3 cuts were within 30 ms of a word and 7 on audio louder than -12 dB vs speech"
+  ],
+  [
+   "20/22 vs 12/22",
+   "clips on a planted highlight, free model vs keyword-rule baseline (synthetic talks, one run); the highlights were written to stand alone, the same model family drafted the scripts, and recall is only 20 of 43 because it was asked for 2-3 clips per talk and each talk has 5 planted highlights"
+  ],
+  [
+   "16 of 20",
+   "sampled clips fully standalone (15 of 20 pass the whole rubric), from the 9 videos done on day one (not the 4 talks added on day two), scored with a rubric by Claude (the AI that built Recut), not an independent human; the blind LLM judge, a fallback model, said 47 of 48 but also 60% of random windows"
+  ],
+  [
+   "12 of 78",
+   "social posts flagged by the grounding check: 6 repeat an invented “$1.10”, 6 a misheard “$1,400” (errors that began in the test voice and in Whisper, passed on by the model); it also flagged 4 long-form passages, 3 of them stitched NASA show-note quotes that were not verbatim"
+  ]
+ ],
+ "short": [
+  "model-picked cut points inside a word by Whisper’s word times; 3 within 30 ms, 7 on loud audio"
+ ],
+ "card": {
+  "en": "A clipper that turns long videos into captioned vertical clips and waits for your approval."
+ }
+}

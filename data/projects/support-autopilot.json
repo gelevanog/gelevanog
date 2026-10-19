@@ -1,6 +1,6 @@
 {
  "id": "support-autopilot",
- "order": 9,
+ "order": 13,
  "name": "Support Autopilot",
  "repo": "https://github.com/gelevanog/support-agent-langgraph",
  "stack": [
